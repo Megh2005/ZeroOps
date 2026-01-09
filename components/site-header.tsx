@@ -40,9 +40,9 @@ export function SiteHeader() {
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white">
             <Layers className="h-5 w-5" />
           </div>
-          <span>Zero Ops</span>
+          <span>ZeroOps</span>
         </Link>
-        <nav className="hidden md:flex items-center gap-8 text-sm font-medium text-gray-400">
+        <nav className="hidden md:flex items-center gap-8 text-md text-gray-200">
           <Link href="/features" className="hover:text-white transition-colors">
             Features
           </Link>

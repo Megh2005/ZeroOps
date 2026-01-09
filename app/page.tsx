@@ -133,24 +133,13 @@ export default function LandingPage() {
             initial="hidden"
             animate="visible"
             variants={staggerContainer}
-            className="mx-auto max-w-4xl"
+            className="mx-auto max-w-[80vw]"
           >
-            <motion.div
-              variants={fadeInUp}
-              className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-3 py-1 text-xs font-medium text-blue-400"
-            >
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
-              </span>
-              v2.0 is now live
-            </motion.div>
-
             <motion.h1
               variants={fadeInUp}
               className="mb-8 text-5xl font-bold tracking-tight md:text-7xl lg:text-8xl"
             >
-              Infrastructure as <br />
+              Infrastructure as{" "}
               <span className="bg-linear-to-r from-blue-400 via-purple-400 to-white bg-clip-text text-transparent">
                 Visual Art
               </span>
@@ -158,7 +147,7 @@ export default function LandingPage() {
 
             <motion.p
               variants={fadeInUp}
-              className="mx-auto mb-12 max-w-2xl text-lg text-gray-400 md:text-xl"
+              className="mx-auto mb-12 max-w-[60vw] text-lg text-gray-100 md:text-2xl"
             >
               Stop wrestling with YAML indentation. Build production-ready cloud
               infrastructure with a drag-and-drop interface that developers
@@ -241,10 +230,10 @@ export default function LandingPage() {
           <div className="max-w-[80vw] mx-auto px-6">
             <div className="grid grid-cols-2 gap-8 text-center md:grid-cols-4">
               {[
-                { label: "Resources Managed", value: "1M+" },
-                { label: "Active Developers", value: "50k+" },
+                { label: "Resources Managed", value: "100K+" },
+                { label: "Active Developers", value: "50+" },
                 { label: "Cloud Providers", value: "3" },
-                { label: "Uptime", value: "99.9%" },
+                { label: "Uptime", value: "95%" },
               ].map((stat, i) => (
                 <div key={i}>
                   <div className="text-3xl font-bold text-white md:text-4xl">
@@ -264,12 +253,12 @@ export default function LandingPage() {
           <div className="relative overflow-hidden rounded-3xl bg-linear-to-b from-blue-900/20 to-purple-900/20 px-6 py-20 border border-white/10">
             <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-20" />
             <div className="relative z-10">
-              <h2 className="mb-6 text-4xl font-bold  md:text-5xl">
+              <h2 className="mb-6 text-4xl capitalize font-bold  md:text-5xl">
                 Ready to architect the future?
               </h2>
-              <p className="mx-auto mb-10 max-w-xl text-lg text-gray-400">
+              <p className="mx-auto mb-10 max-w-xl text-lg text-gray-300">
                 Join thousands of developers who are building better
-                infrastructure, faster.
+                infrastructure, faster
               </p>
               <Link
                 href="/builder"
@@ -282,9 +271,9 @@ export default function LandingPage() {
         </section>
       </main>
 
-      <footer className="mt-32 border-t border-white/10 bg-[#020202] py-12 text-center text-sm text-gray-600">
-        <div className="max-w-[80vw] mx-auto px-6">
-          <p>© 2024 DevOps Architect. Built for builders.</p>
+      <footer className="mt-32 border-t border-white/10 bg-[#020202] py-12 text-center text-sm text-gray-200">
+        <div className="max-w-[80vw] text-xl capitalize mx-auto px-6">
+          <p>&copy; 2026 DevOps Architect. Built for builders</p>
         </div>
       </footer>
     </div>

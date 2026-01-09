@@ -400,7 +400,7 @@ Enhanced monitoring and analytics through:
 
 **Built To Make *Google Cloud Platform* Visually Automated**
 
-[![Get Started](https://img.shields.io/badge/Get%20Started-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white)](#)
+[![Get Started](https://img.shields.io/badge/Get%20Started-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white)](https://zerops.tropicalcoders.xyz/)
 [![Whitepaper](https://img.shields.io/badge/Whitepaper-7B42BC?style=for-the-badge&logo=read-the-docs&logoColor=white)](https://github.com/Megh2005/ZeroOps/blob/master/README.md)
 [![Community](https://img.shields.io/badge/Join%20Community-8E75B2?style=for-the-badge&logo=telegram&logoColor=white)](https://discuss.google.dev/c/google-cloud/14)
 
