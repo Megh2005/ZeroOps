@@ -1,12 +1,13 @@
-# ZeroOps
-
 <div align="center">
 
-> ***Drag. Drop. Deploy. Let the bots handle the chaos while you ship like a legend.***
+# ZeroOps
+
+
+***Drag. Drop. Deploy. Let the bots handle the chaos while you ship like a legend***
 
 [![Google Cloud](https://img.shields.io/badge/Google%20Cloud-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white)](https://cloud.google.com)
 [![Terraform](https://img.shields.io/badge/Terraform-7B42BC?style=for-the-badge&logo=terraform&logoColor=white)](https://terraform.io)
-[![AI Powered](https://img.shields.io/badge/AI%20Powered-Gemini-8E75B2?style=for-the-badge&logo=google-gemini&logoColor=white)](https://ai.google.dev)
+[![Gemini](https://img.shields.io/badge/Gemini-8E75B2?style=for-the-badge&logo=google-gemini&logoColor=white)](https://ai.google.dev)
 
 
 </div>
@@ -397,10 +398,10 @@ Enhanced monitoring and analytics through:
 
 <div align="center">
 
-**Built on Google Cloud Platform**
+**Built To Make *Google Cloud Platform* Visually Automated**
 
 [![Get Started](https://img.shields.io/badge/Get%20Started-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white)](#)
-[![Documentation](https://img.shields.io/badge/Documentation-7B42BC?style=for-the-badge&logo=read-the-docs&logoColor=white)](#)
-[![Community](https://img.shields.io/badge/Join%20Community-8E75B2?style=for-the-badge&logo=discord&logoColor=white)](#)
+[![Whitepaper](https://img.shields.io/badge/Whitepaper-7B42BC?style=for-the-badge&logo=read-the-docs&logoColor=white)](https://github.com/Megh2005/ZeroOps/blob/master/README.md)
+[![Community](https://img.shields.io/badge/Join%20Community-8E75B2?style=for-the-badge&logo=telegram&logoColor=white)](https://discuss.google.dev/c/google-cloud/14)
 
 </div>
