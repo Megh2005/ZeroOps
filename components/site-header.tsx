@@ -58,6 +58,9 @@ export function SiteHeader() {
           <Link href="/docs" className="hover:text-white transition-colors">
             Docs
           </Link>
+          <Link href="/contact" className="hover:text-white transition-colors">
+            Contact
+          </Link>
           <Link href="/devops" className="hover:text-white transition-colors">
             DevOps
           </Link>

@@ -238,7 +238,7 @@ export default function FeaturesPage() {
               className="relative rounded-3xl border border-white/10 bg-[#111] p-8 overflow-hidden"
             >
               <div className="absolute top-0 right-0 -mt-10 -mr-10 h-64 w-64 rounded-full bg-purple-600/20 blur-[80px]" />
-              <div className="relative z-10 space-y-4 font-mono text-sm">
+              <div className="relative z-10 space-y-4 text-sm">
                 <div className="flex gap-3">
                   <div className="h-8 w-8 rounded-full bg-blue-600 flex items-center justify-center text-white text-xs font-bold">
                     U
@@ -249,8 +249,8 @@ export default function FeaturesPage() {
                   </div>
                 </div>
                 <div className="flex gap-3 flex-row-reverse">
-                  <div className="h-8 w-8 rounded-full bg-purple-600 flex items-center justify-center text-white">
-                    <Sparkles className="h-4 w-4" />
+                  <div className="h-8 w-8 rounded-full bg-purple-600 flex items-center justify-center text-white text-xs font-bold">
+                    A
                   </div>
                   <div className="bg-purple-500/10 p-4 rounded-2xl rounded-tr-none text-gray-300 border border-purple-500/20">
                     <p className="mb-2">

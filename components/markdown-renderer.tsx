@@ -19,8 +19,8 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
                 code: ({ className, children, ...props }: any) => {
                     const isInline = !className?.includes('language-');
                     return isInline
-                        ? <code className="bg-white/10 text-blue-300 px-1.5 py-0.5 rounded text-sm font-mono" {...props}>{children}</code>
-                        : <code className="block bg-black/50 p-4 rounded-lg text-sm font-mono text-gray-300 overflow-x-auto border border-white/5 my-4" {...props}>{children}</code>;
+                        ? <code className="bg-white/10 text-blue-300 px-1.5 py-0.5 rounded text-sm" {...props}>{children}</code>
+                        : <code className="block bg-black/50 p-4 rounded-lg text-sm text-gray-300 overflow-x-auto border border-white/5 my-4" {...props}>{children}</code>;
                 },
                 pre: ({ ...props }) => <pre className="not-prose" {...props} />,
                 blockquote: ({ ...props }) => <blockquote className="border-l-4 border-blue-500/50 pl-4 italic text-gray-400 my-4" {...props} />,

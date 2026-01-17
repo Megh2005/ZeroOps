@@ -13,6 +13,7 @@ const PUBLIC_PATHS = [
   "/how-it-works",
   "/pricing",
   "/docs",
+  "/contact",
 ];
 
 export function AuthGuard({ children }: { children: React.ReactNode }) {

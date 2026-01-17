@@ -4,7 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/components/auth-provider";
 import { AuthGuard } from "@/components/auth-guard";
 import { Toaster } from "sonner";
-import { Rubik_Doodle_Shadow } from "next/font/google";
+import { Quantico } from "next/font/google";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 
 export const metadata: Metadata = {
@@ -13,7 +13,7 @@ export const metadata: Metadata = {
     "Visual drag-and-drop infrastructure designer with Terraform export",
 };
 
-const rubik = Rubik_Doodle_Shadow({
+const rubik = Quantico({
   subsets: ["latin"],
   weight: ["400"],
 });
@@ -38,7 +38,13 @@ export default function RootLayout({
           <AuthProvider>
             <AuthGuard>{children}</AuthGuard>
           </AuthProvider>
-          <Toaster />
+          <Toaster
+            theme="dark"
+            position="bottom-right"
+            richColors
+            expand={true}
+            duration={3000}
+          />
         </div>
       </body>
     </html>

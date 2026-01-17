@@ -59,7 +59,7 @@ const TimelineItem = ({
     <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-[#111] p-6 rounded-3xl border border-white/10 shadow-lg hover:border-blue-500/30 transition-colors">
       <div className="flex items-center justify-between mb-2">
         <h3 className="font-bold text-white text-lg">{title}</h3>
-        <span className="text-xs font-mono text-blue-400 bg-blue-500/10 px-2 py-1 rounded-full">
+        <span className="text-xs text-blue-400 bg-blue-500/10 px-2 py-1 rounded-full">
           {year}
         </span>
       </div>
@@ -152,7 +152,7 @@ export default function HowItWorksPage() {
                     <Layers className="h-8 w-8" />
                   </div>
                   <h3 className="text-xl font-bold text-white mb-2">
-                    1. Visual State
+                    Visual State
                   </h3>
                   <p className="text-gray-400 text-sm">
                     Your canvas design is captured as a JSON state graph,
@@ -164,7 +164,7 @@ export default function HowItWorksPage() {
                     <Code className="h-8 w-8" />
                   </div>
                   <h3 className="text-xl font-bold text-white mb-2">
-                    2. Transpilation
+                    Transpilation
                   </h3>
                   <p className="text-gray-400 text-sm">
                     Our engine traverses the graph, resolving dependencies and
@@ -176,7 +176,7 @@ export default function HowItWorksPage() {
                     <Cloud className="h-8 w-8" />
                   </div>
                   <h3 className="text-xl font-bold text-white mb-2">
-                    3. Deployment
+                    Deployment
                   </h3>
                   <p className="text-gray-400 text-sm">
                     The generated Terraform is validated against cloud policies
@@ -222,7 +222,7 @@ export default function HowItWorksPage() {
                       </li>
                     </ul>
                   </div>
-                  <div className="bg-black/50 rounded-2xl p-6 border border-white/5 font-mono text-sm">
+                  <div className="bg-black/50 rounded-2xl p-6 border border-white/5 text-sm">
                     <div className="flex items-center gap-2 mb-4 border-b border-white/10 pb-2">
                       <Sparkles className="w-4 h-4 text-yellow-500" />
                       <span className="text-gray-400">Gemini Analysis</span>

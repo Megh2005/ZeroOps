@@ -70,11 +70,11 @@ const CodeWindow = () => (
       <div className="h-3 w-3 rounded-full bg-red-500/80" />
       <div className="h-3 w-3 rounded-full bg-yellow-500/80" />
       <div className="h-3 w-3 rounded-full bg-green-500/80" />
-      <div className="ml-4 text-xs font-mono text-gray-500">
+      <div className="ml-4 text-sm text-gray-500">
         user@cloudshell:~/infra
       </div>
     </div>
-    <div className="p-6 font-mono text-sm leading-relaxed">
+    <div className="p-6 text-sm leading-relaxed">
       <div className="text-gray-300">
         <span className="text-green-400">➜</span>{" "}
         <span className="text-blue-400">~</span> gcloud infra-manager
@@ -239,7 +239,7 @@ export default function LandingPage() {
                   <div className="text-3xl font-bold text-white md:text-4xl">
                     {stat.value}
                   </div>
-                  <div className="mt-2 text-sm text-gray-500 font-mono uppercase tracking-wider">
+                  <div className="mt-2 text-sm text-gray-500 uppercase tracking-wider">
                     {stat.label}
                   </div>
                 </div>
