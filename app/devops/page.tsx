@@ -16,10 +16,11 @@ import { SiteHeader } from "@/components/site-header";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
+import { toast } from "sonner";
 
 export default function DevOpsPage() {
   const [activeTab, setActiveTab] = useState<"terraform" | "architecture">(
-    "terraform"
+    "terraform",
   );
   const [terraformCode, setTerraformCode] = useState("");
   const [terraformOutput, setTerraformOutput] = useState("");
@@ -32,12 +33,23 @@ export default function DevOpsPage() {
   const handleDebug = async () => {
     if (!terraformCode.trim()) return;
     setIsDebugging(true);
+
+    const debugPromise = debugTerraform(terraformCode);
+
+    toast.promise(debugPromise, {
+      loading: "Analyzing Terraform configuration...",
+      success: (result) => {
+        setTerraformOutput(result);
+        return "Analysis complete!";
+      },
+      error: (err) => {
+        setTerraformOutput("An error occurred while debugging.");
+        return "Analysis failed.";
+      },
+    });
+
     try {
-      const result = await debugTerraform(terraformCode);
-      setTerraformOutput(result);
-    } catch (error) {
-      setTerraformOutput("An error occurred while debugging.");
-      console.error(error);
+      await debugPromise;
     } finally {
       setIsDebugging(false);
     }
@@ -46,15 +58,162 @@ export default function DevOpsPage() {
   const handleAnalyze = async () => {
     if (!archDescription.trim()) return;
     setIsAnalyzing(true);
+
+    const analyzePromise = getArchitecturalSuggestions(archDescription);
+
+    toast.promise(analyzePromise, {
+      loading: "Generating architecture suggestions...",
+      success: (result) => {
+        setArchOutput(result);
+        return "Blueprint generated!";
+      },
+      error: (err) => {
+        setArchOutput("An error occurred while analyzing.");
+        return "Generation failed.";
+      },
+    });
+
     try {
-      const result = await getArchitecturalSuggestions(archDescription);
-      setArchOutput(result);
-    } catch (error) {
-      setArchOutput("An error occurred while analyzing.");
-      console.error(error);
+      await analyzePromise;
     } finally {
       setIsAnalyzing(false);
     }
+  };
+
+  const exportToPDF = async (title: string, content: string) => {
+    const { jsPDF } = await import("jspdf");
+    const doc = new jsPDF();
+
+    // Config
+    const margin = 20;
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const contentWidth = pageWidth - margin * 2;
+    let y = 35;
+
+    // Theme color based on title
+    const isArch = title.toLowerCase().includes("architecture");
+    const themeColor = isArch ? [147, 51, 234] : [37, 99, 235]; // Purple vs Blue
+
+    // Background
+    doc.setFillColor(5, 5, 5);
+    doc.rect(0, 0, 210, 297, "F");
+
+    // Header Branding
+    doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
+    doc.rect(margin, 15, 2, 12, "F"); // Decorative monogram bar
+
+    doc.setTextColor(255, 255, 255);
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(22);
+    doc.text("ZeroOps", margin + 5, 23);
+
+    doc.setFontSize(9);
+    doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
+    doc.text("CLOUD INFRASTRUCTURE ANALYSIS", margin + 5, 28);
+
+    doc.setDrawColor(30, 30, 30);
+    doc.line(margin, 35, pageWidth - margin, 35);
+
+    // Document Title
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(16);
+    doc.text(title, margin, 48);
+    y = 58;
+
+    // Initial Font
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(10);
+    doc.setTextColor(180, 180, 180);
+
+    const cleanContent = content.replace(
+      /```[\s\S]*?```/g,
+      "\n[CODE BLOCK - EXPORTED AS PNG SEPARATELY]\n",
+    );
+    const lines = cleanContent.split("\n");
+
+    const checkPage = (height: number) => {
+      if (y + height > 275) {
+        doc.addPage();
+        doc.setFillColor(5, 5, 5);
+        doc.rect(0, 0, 210, 297, "F");
+        y = 25;
+        return true;
+      }
+      return false;
+    };
+
+    lines.forEach((line) => {
+      if (!line.trim()) {
+        y += 4;
+        return;
+      }
+
+      if (line.startsWith("## ")) {
+        checkPage(15);
+        y += 5;
+        doc.setFontSize(14);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
+        doc.text(line.replace("## ", "").toUpperCase(), margin, y);
+        y += 8;
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(200, 200, 200);
+      } else if (line.startsWith("### ")) {
+        checkPage(12);
+        doc.setFontSize(11);
+        doc.setFont("helvetica", "bold");
+        doc.setTextColor(255, 255, 255);
+        doc.text(line.replace("### ", ""), margin, y);
+        y += 7;
+        doc.setFontSize(10);
+        doc.setFont("helvetica", "normal");
+        doc.setTextColor(180, 180, 180);
+      } else if (line.trim().startsWith("- ") || line.trim().startsWith("* ")) {
+        const itemText = "• " + line.trim().substring(2);
+        const splitItem = doc.splitTextToSize(itemText, contentWidth - 8);
+        checkPage(splitItem.length * 5.5);
+        doc.text(splitItem, margin + 5, y);
+        y += splitItem.length * 5.5;
+      } else if (line.trim().startsWith("---")) {
+        checkPage(10);
+        doc.setDrawColor(40, 40, 40);
+        doc.line(margin, y, pageWidth - margin, y);
+        y += 8;
+      } else if (line.includes("[CODE BLOCK")) {
+        checkPage(10);
+        doc.setFillColor(20, 20, 20);
+        doc.setDrawColor(themeColor[0], themeColor[1], themeColor[2]);
+        doc.rect(margin, y - 4, contentWidth, 8, "FD");
+        doc.setFontSize(8);
+        doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
+        doc.text(line.trim(), margin + 5, y + 1);
+        y += 10;
+        doc.setFontSize(10);
+        doc.setTextColor(180, 180, 180);
+      } else {
+        let text = line.replace(/\*\*(.*?)\*\*/g, "$1");
+        const splitText = doc.splitTextToSize(text, contentWidth);
+        checkPage(splitText.length * 5.5);
+        doc.text(splitText, margin, y);
+        y += splitText.length * 5.5;
+      }
+    });
+
+    const totalPages = (doc as any).internal.getNumberOfPages();
+    for (let i = 1; i <= totalPages; i++) {
+      doc.setPage(i);
+      doc.setFontSize(8);
+      doc.setTextColor(80, 80, 80);
+      doc.text(
+        `ZEROOPS INFRASTRUCTURE REPORT • PAGE ${i} OF ${totalPages}`,
+        pageWidth / 2,
+        285,
+        { align: "center" },
+      );
+    }
+
+    doc.save(`${title.toLowerCase().replace(/\s+/g, "-")}.pdf`);
   };
 
   return (
@@ -63,7 +222,7 @@ export default function DevOpsPage() {
       <div className="fixed inset-0 z-0 pointer-events-none">
         <div className="absolute top-[-10%] left-[-10%] h-[500px] w-[500px] rounded-full bg-purple-600/10 blur-[120px]" />
         <div className="absolute bottom-[-10%] right-[-10%] h-[500px] w-[500px] rounded-full bg-blue-600/10 blur-[120px]" />
-        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
+        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center mask-[linear-gradient(180deg,white,rgba(255,255,255,0))]" />
       </div>
 
       <SiteHeader />
@@ -101,7 +260,7 @@ export default function DevOpsPage() {
                 "relative px-8 py-3 rounded-full text-sm font-medium transition-all duration-300",
                 activeTab === "terraform"
                   ? "text-white"
-                  : "text-gray-400 hover:text-white"
+                  : "text-gray-400 hover:text-white",
               )}
             >
               {activeTab === "terraform" && (
@@ -121,7 +280,7 @@ export default function DevOpsPage() {
                 "relative px-8 py-3 rounded-full text-sm font-medium transition-all duration-300",
                 activeTab === "architecture"
                   ? "text-white"
-                  : "text-gray-400 hover:text-white"
+                  : "text-gray-400 hover:text-white",
               )}
             >
               {activeTab === "architecture" && (
@@ -273,10 +432,26 @@ export default function DevOpsPage() {
                     className="border-t border-white/10 bg-white/2"
                   >
                     <div className="p-6 md:p-8">
-                      <div className="flex items-center gap-2 mb-4 text-green-400 font-medium">
-                        <CheckCircle2 className="w-5 h-5" /> Analysis Complete
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2 text-green-400 font-medium">
+                          <CheckCircle2 className="w-5 h-5" /> Analysis Complete
+                        </div>
+                        <Button
+                          onClick={() =>
+                            exportToPDF(
+                              "Terraform Analysis Report",
+                              terraformOutput,
+                            )
+                          }
+                          variant="ghost"
+                          size="sm"
+                          className="text-gray-400 hover:bg-white/10 hover:text-white"
+                        >
+                          <ArrowRight className="w-4 h-4 mr-2 rotate-45" />{" "}
+                          Download PDF Report
+                        </Button>
                       </div>
-                      <div className="rounded-xl border border-white/10 bg-black/50 p-6 text-sm text-gray-300">
+                      <div>
                         <MarkdownRenderer content={terraformOutput} />
                       </div>
                     </div>
@@ -319,7 +494,7 @@ export default function DevOpsPage() {
                       <button
                         onClick={() =>
                           setArchDescription(
-                            "Design a serverless event-driven architecture using Cloud Run, Pub/Sub, and Eventarc to process images uploaded to Cloud Storage."
+                            "Design a serverless event-driven architecture using Cloud Run, Pub/Sub, and Eventarc to process images uploaded to Cloud Storage.",
                           )
                         }
                         className="shrink-0 text-xs bg-white/5 hover:bg-white/10 border border-white/5 text-gray-400 hover:text-white px-3 py-1.5 rounded-full transition-colors backdrop-blur-md"
@@ -329,7 +504,7 @@ export default function DevOpsPage() {
                       <button
                         onClick={() =>
                           setArchDescription(
-                            "I need a globally distributed, high-availability web application architecture using Cloud Spanner and Global Load Balancing."
+                            "I need a globally distributed, high-availability web application architecture using Cloud Spanner and Global Load Balancing.",
                           )
                         }
                         className="shrink-0 text-xs bg-white/5 hover:bg-white/10 border border-white/5 text-gray-400 hover:text-white px-3 py-1.5 rounded-full transition-colors backdrop-blur-md"
@@ -339,7 +514,7 @@ export default function DevOpsPage() {
                       <button
                         onClick={() =>
                           setArchDescription(
-                            "Design a scalable data lake and analytics platform using Cloud Storage, BigQuery, and Dataflow for real-time processing."
+                            "Design a scalable data lake and analytics platform using Cloud Storage, BigQuery, and Dataflow for real-time processing.",
                           )
                         }
                         className="shrink-0 text-xs bg-white/5 hover:bg-white/10 border border-white/5 text-gray-400 hover:text-white px-3 py-1.5 rounded-full transition-colors backdrop-blur-md"
@@ -349,7 +524,7 @@ export default function DevOpsPage() {
                       <button
                         onClick={() =>
                           setArchDescription(
-                            "I need a secure CI/CD pipeline using Cloud Build and Artifact Registry that deploys to Cloud Run with Binary Authorization."
+                            "I need a secure CI/CD pipeline using Cloud Build and Artifact Registry that deploys to Cloud Run with Binary Authorization.",
                           )
                         }
                         className="shrink-0 text-xs bg-white/5 hover:bg-white/10 border border-white/5 text-gray-400 hover:text-white px-3 py-1.5 rounded-full transition-colors backdrop-blur-md"
@@ -359,7 +534,7 @@ export default function DevOpsPage() {
                       <button
                         onClick={() =>
                           setArchDescription(
-                            "Best way to connect an on-premise data center to a VPC using Cloud VPN or Interconnect with high availability."
+                            "Best way to connect an on-premise data center to a VPC using Cloud VPN or Interconnect with high availability.",
                           )
                         }
                         className="shrink-0 text-xs bg-white/5 hover:bg-white/10 border border-white/5 text-gray-400 hover:text-white px-3 py-1.5 rounded-full transition-colors backdrop-blur-md"
@@ -397,10 +572,26 @@ export default function DevOpsPage() {
                     className="border-t border-white/10 bg-white/2"
                   >
                     <div className="p-6 md:p-8">
-                      <div className="flex items-center gap-2 mb-4 text-purple-400 font-medium">
-                        <Sparkles className="w-5 h-5" /> Recommendation
+                      <div className="flex items-center justify-between mb-4">
+                        <div className="flex items-center gap-2 text-purple-400 font-medium">
+                          <Sparkles className="w-5 h-5" /> Recommendation
+                        </div>
+                        <Button
+                          onClick={() =>
+                            exportToPDF(
+                              "Architecture Design Report",
+                              archOutput,
+                            )
+                          }
+                          variant="ghost"
+                          size="sm"
+                          className="text-gray-400 hover:bg-white/10 hover:text-white"
+                        >
+                          <ArrowRight className="w-4 h-4 mr-2 rotate-45" />{" "}
+                          Download PDF Report
+                        </Button>
                       </div>
-                      <div className="rounded-xl border border-white/10 bg-black/50 p-6 text-sm text-gray-300">
+                      <div>
                         <MarkdownRenderer content={archOutput} />
                       </div>
                     </div>

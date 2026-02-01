@@ -4,7 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/components/auth-provider";
 import { AuthGuard } from "@/components/auth-guard";
 import { Toaster } from "sonner";
-import { Quantico } from "next/font/google";
+import { Quantico, JetBrains_Mono } from "next/font/google";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 
 export const metadata: Metadata = {
@@ -16,6 +16,12 @@ export const metadata: Metadata = {
 const rubik = Quantico({
   subsets: ["latin"],
   weight: ["400"],
+  variable: "--font-rubik",
+});
+
+const jetbrainsMono = JetBrains_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
 });
 
 export default function RootLayout({
@@ -25,7 +31,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={rubik.className}>
+      <body className={`${rubik.className} ${jetbrainsMono.variable}`}>
         <div className="flex h-screen w-screen items-center bg-black justify-center p-4 xl:hidden">
           <Alert
             className="bg-red text-red-500 text-2xl text-center justify-center content-center"
@@ -40,8 +46,9 @@ export default function RootLayout({
           </AuthProvider>
           <Toaster
             theme="dark"
-            position="bottom-right"
+            position="top-right"
             richColors
+            closeButton
             expand={true}
             duration={3000}
           />

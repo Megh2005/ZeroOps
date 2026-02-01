@@ -176,3 +176,41 @@ export async function optimizeTerraform(code: string): Promise<{ optimizedCode: 
         };
     }
 }
+
+export async function chatWithDevOpsBot(message: string, history: { role: "user" | "model", parts: { text: string }[] }[]): Promise<string> {
+    if (!model) {
+        return "Error: GEMINI_API_KEY is not set.";
+    }
+
+    const systemPrompt = `You are "ZeroOps Bot", an AI specialized in Google Cloud Platform (GCP) DevOps. 
+    Your goal is to explain complex DevOps concepts to "laymen" or beginners in a clear, friendly, and to-the-point manner.
+    
+    GUIDELINES:
+    1. Keep responses concise and focused. Avoid overwhelming the user with too much jargon.
+    2. When using jargon, explain it simply (e.g., "CI/CD is like an automated assembly line for code").
+    3. Focus specifically on GCP tools: Cloud Build, Artifact Registry, GKE, Cloud Run, Terraform (GCP Provider), Cloud Monitoring, etc.
+    4. Stay in character as a helpful mentor.
+    5. If a question is not about GCP or DevOps, politely steer the conversation back to those topics.
+    6. Use Markdown for formatting (bolding, lists, code blocks).
+    
+    Current Task: The user is asking a question or follow-up. Answer it based on the previous conversation history provided.`;
+
+    try {
+        const chat = model.startChat({
+            history: history,
+            generationConfig: {
+                maxOutputTokens: 1000,
+            },
+        });
+
+        const result = await chat.sendMessage([
+            { text: systemPrompt },
+            { text: message }
+        ]);
+
+        const response = await result.response;
+        return response.text();
+    } catch (error: any) {
+        return `Error interacting with DevOps Bot: ${error.message}`;
+    }
+}

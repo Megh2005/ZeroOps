@@ -1,33 +1,229 @@
-import React from 'react';
-import ReactMarkdown from 'react-markdown';
+import React from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import rehypeHighlight from "rehype-highlight";
+import { Download } from "lucide-react";
 
 interface MarkdownRendererProps {
-    content: string;
+  content: string;
 }
 
+// Custom plugin to group H2 sections into cards
+const rehypeCardGroups = () => {
+  return (tree: any) => {
+    const newChildren = [];
+    let currentCard: any = null;
+
+    for (const child of tree.children) {
+      if (child.type === "element" && child.tagName === "h2") {
+        // If there's an existing card, push it
+        if (currentCard) {
+          newChildren.push(currentCard);
+        }
+        // Start a new card
+        currentCard = {
+          type: "element",
+          tagName: "div",
+          properties: {
+            className: [
+              "bg-white/5 border border-white/10 rounded-xl p-6 mb-6 shadow-lg backdrop-blur-sm card-section hover:border-white/20 transition-colors",
+            ],
+          },
+          children: [child],
+        };
+      } else if (currentCard) {
+        // Add to current card
+        currentCard.children.push(child);
+      } else {
+        // Handle content before the first H2
+        // If it's just whitespace, ignore
+        if (child.type === "text" && !child.value.trim()) {
+          newChildren.push(child);
+        } else {
+          // Create a default card for intro content
+          if (!currentCard) {
+            currentCard = {
+              type: "element",
+              tagName: "div",
+              properties: {
+                className: [
+                  "bg-white/5 border border-white/10 rounded-xl p-6 mb-6 shadow-lg backdrop-blur-sm card-section",
+                ],
+              },
+              children: [],
+            };
+          }
+          currentCard.children.push(child);
+        }
+      }
+    }
+
+    if (currentCard) {
+      newChildren.push(currentCard);
+    }
+
+    tree.children = newChildren;
+  };
+};
+
 export function MarkdownRenderer({ content }: MarkdownRendererProps) {
-    return (
-        <ReactMarkdown
-            components={{
-                h1: ({ ...props }) => <h1 className="text-2xl font-bold text-blue-400 mb-4" {...props} />,
-                h2: ({ ...props }) => <h2 className="text-xl font-semibold text-purple-400 mt-6 mb-3" {...props} />,
-                h3: ({ ...props }) => <h3 className="text-lg font-medium text-white mt-4 mb-2" {...props} />,
-                p: ({ ...props }) => <p className="text-gray-300 leading-relaxed mb-4" {...props} />,
-                ul: ({ ...props }) => <ul className="list-disc list-outside ml-6 mb-4 text-gray-300 space-y-1" {...props} />,
-                ol: ({ ...props }) => <ol className="list-decimal list-outside ml-6 mb-4 text-gray-300 space-y-1" {...props} />,
-                li: ({ ...props }) => <li className="pl-1" {...props} />,
-                code: ({ className, children, ...props }: any) => {
-                    const isInline = !className?.includes('language-');
-                    return isInline
-                        ? <code className="bg-white/10 text-blue-300 px-1.5 py-0.5 rounded text-sm" {...props}>{children}</code>
-                        : <code className="block bg-black/50 p-4 rounded-lg text-sm text-gray-300 overflow-x-auto border border-white/5 my-4" {...props}>{children}</code>;
-                },
-                pre: ({ ...props }) => <pre className="not-prose" {...props} />,
-                blockquote: ({ ...props }) => <blockquote className="border-l-4 border-blue-500/50 pl-4 italic text-gray-400 my-4" {...props} />,
-                a: ({ ...props }) => <a className="text-blue-400 hover:text-blue-300 underline underline-offset-4" {...props} />,
-            }}
-        >
-            {content}
-        </ReactMarkdown>
-    );
+  return (
+    <ReactMarkdown
+      remarkPlugins={[remarkGfm]}
+      rehypePlugins={[rehypeHighlight, rehypeCardGroups]}
+      components={{
+        h1: ({ ...props }) => (
+          <h1
+            className="text-3xl font-bold text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-purple-400 mb-6 border-b border-white/10 pb-4"
+            {...props}
+          />
+        ),
+        h2: ({ ...props }) => (
+          <h2
+            className="text-xl font-bold text-blue-300 mb-4 flex items-center gap-2 border-b border-white/5 pb-2"
+            {...props}
+          />
+        ),
+        h3: ({ ...props }) => (
+          <h3
+            className="text-lg font-semibold text-purple-300 mt-4 mb-2"
+            {...props}
+          />
+        ),
+        p: ({ ...props }) => (
+          <p
+            className="text-gray-300 leading-relaxed mb-4 text-sm"
+            {...props}
+          />
+        ),
+        ul: ({ ...props }) => (
+          <ul
+            className="list-disc list-outside ml-5 mb-4 text-gray-300 space-y-2 text-sm"
+            {...props}
+          />
+        ),
+        ol: ({ ...props }) => (
+          <ol
+            className="list-decimal list-outside ml-5 mb-4 text-gray-300 space-y-2 text-sm"
+            {...props}
+          />
+        ),
+        li: ({ ...props }) => <li className="pl-1" {...props} />,
+        code: ({ className, children, ...props }: any) => {
+          const match = /language-(\w+)/.exec(className || "");
+          const content = String(children);
+          const isMultiLine = content.includes("\n");
+          const isBlock = match || className?.includes("hljs") || isMultiLine;
+
+          if (!isBlock) {
+            return (
+              <code
+                className="bg-white/10 text-orange-200 px-1.5 py-0.5 rounded text-xs font-mono border border-white/5"
+                {...props}
+              >
+                {children}
+              </code>
+            );
+          }
+
+          const codeRef = React.useRef<HTMLDivElement>(null);
+
+          const handleDownload = async () => {
+            if (!codeRef.current) return;
+
+            try {
+              const { toPng } = await import("html-to-image");
+              const url = await toPng(codeRef.current, {
+                backgroundColor: "#0D0D0D",
+                pixelRatio: 2, // High resolution
+              });
+
+              const link = document.createElement("a");
+              link.download = `code-${match ? match[1] : "snippet"}.png`;
+              link.href = url;
+              link.click();
+            } catch (error) {
+              console.error("Error generating image:", error);
+            }
+          };
+
+          return (
+            <div className="relative group my-4 rounded-lg overflow-hidden border border-white/10">
+              <div className="absolute top-0 left-0 right-0 h-8 bg-[#1A1A1A] flex items-center justify-between px-3 border-b border-white/10 z-10">
+                <div className="flex gap-1.5 items-center">
+                  <div className="flex gap-1.5">
+                    <div className="w-2.5 h-2.5 rounded-full bg-red-500/20 border border-red-500/50" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/20 border border-yellow-500/50" />
+                    <div className="w-2.5 h-2.5 rounded-full bg-green-500/20 border border-green-500/50" />
+                  </div>
+                  <span className="ml-3 text-[10px] text-gray-500 font-mono uppercase">
+                    {match ? match[1] : "text"}
+                  </span>
+                </div>
+                <button
+                  onClick={handleDownload}
+                  className="p-1 hover:bg-white/10 rounded transition-colors text-gray-400 hover:text-white"
+                  title="Download as PNG"
+                >
+                  <Download className="w-4 h-4" />
+                </button>
+              </div>
+              <div className="absolute -inset-0.5 bg-linear-to-r from-blue-500/10 to-purple-500/10 blur opacity-0 group-hover:opacity-100 transition duration-500 pointer-events-none" />
+              <div ref={codeRef}>
+                <code
+                  className={`${className} block bg-[#0D0D0D] p-4 pt-10 text-sm overflow-x-auto font-mono text-gray-300`}
+                  {...props}
+                >
+                  {children}
+                </code>
+              </div>
+            </div>
+          );
+        },
+        pre: ({ ...props }) => (
+          <pre className="not-prose bg-transparent! p-0! m-0!" {...props} />
+        ),
+        blockquote: ({ ...props }) => (
+          <blockquote
+            className="border-l-4 border-yellow-500/50 pl-4 italic text-gray-400 my-4 bg-yellow-500/5 p-4 rounded-r-lg"
+            {...props}
+          />
+        ),
+        a: ({ ...props }) => (
+          <a
+            className="text-blue-400 hover:text-blue-300 underline underline-offset-4 decoration-blue-400/30 transition-colors"
+            {...props}
+          />
+        ),
+        table: ({ ...props }) => (
+          <div className="overflow-x-auto my-6 rounded-lg border border-white/10">
+            <table
+              className="w-full text-left text-sm text-gray-400"
+              {...props}
+            />
+          </div>
+        ),
+        thead: ({ ...props }) => (
+          <thead className="bg-white/5 text-gray-200 uppercase" {...props} />
+        ),
+        th: ({ ...props }) => (
+          <th
+            className="px-6 py-3 font-medium border-b border-white/10"
+            {...props}
+          />
+        ),
+        td: ({ ...props }) => (
+          <td
+            className="px-6 py-4 border-b border-white/10 whitespace-nowrap"
+            {...props}
+          />
+        ),
+        hr: ({ ...props }) => (
+          <hr className="my-6 border-white/10" {...props} />
+        ),
+      }}
+    >
+      {content}
+    </ReactMarkdown>
+  );
 }

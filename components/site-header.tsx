@@ -39,6 +39,7 @@ export function SiteHeader() {
     { href: "/docs", label: "Docs" },
     { href: "/contact", label: "Contact" },
     { href: "/devops", label: "DevOps" },
+    { href: "/devops-bot", label: "LearnON" },
   ];
 
   return (
@@ -62,7 +63,7 @@ export function SiteHeader() {
               href={link.href}
               className={cn(
                 "hover:text-white transition-colors",
-                pathname === link.href && "text-blue-400 font-semibold"
+                pathname === link.href && "text-blue-400 font-semibold",
               )}
             >
               {link.label}
