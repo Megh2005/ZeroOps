@@ -294,25 +294,25 @@ export default function HowItWorksPage() {
             >
               <div className="relative space-y-8 before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-linear-to-b before:from-transparent before:via-white/10 before:to-transparent">
                 <TimelineItem
-                  year="Q1 2025"
+                  year="Q1 2026"
                   title="Multi-Cloud Expansion"
                   description="Full support for AWS and Azure resources, allowing seamless cross-cloud architectures."
                   icon={<Globe className="w-5 h-5 text-white" />}
                 />
                 <TimelineItem
-                  year="Q3 2025"
+                  year="Q2 2026"
                   title="AI Auto-Healing"
                   description="Gemini agents that not only deploy but actively monitor and fix production incidents in real-time."
                   icon={<Bot className="w-5 h-5 text-white" />}
                 />
                 <TimelineItem
-                  year="Q1 2026"
+                  year="Q3 2026"
                   title="Marketplace Launch"
                   description="A community-driven marketplace for verified architecture templates and custom components."
                   icon={<Rocket className="w-5 h-5 text-white" />}
                 />
                 <TimelineItem
-                  year="2026+"
+                  year="Q4 2026"
                   title="Zero Ops Enterprise"
                   description="On-premise deployment options, SSO enforcement, and dedicated support for Fortune 500 companies."
                   icon={<Target className="w-5 h-5 text-white" />}

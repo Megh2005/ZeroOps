@@ -20,7 +20,21 @@ export async function debugTerraform(code: string): Promise<string> {
     const prompt = `You are an expert DevOps engineer and a Google Cloud Platform (GCP) Terraform specialist. 
   Please analyze the following Terraform code for errors, best practices (specifically for GCP), and security vulnerabilities. 
   Focus on the 'google cloude' and 'gcp' providers.
-  Provide a corrected version of the code if necessary, and explain your changes.
+  
+  Format your response in structured Markdown.
+  Use the following sections, and ensure each section starts with an H2 (##) header:
+  
+  ## Analysis
+  [General analysis of the code]
+  
+  ## Security Risks
+  [List any security vulnerabilities found]
+  
+  ## Best Practices
+  [Suggestions for GCP best practices]
+  
+  ## Corrected Code
+  [Provide the corrected Terraform code in a hcl code block]
   
   Terraform Code:
   \`\`\`hcl

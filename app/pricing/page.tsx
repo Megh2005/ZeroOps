@@ -181,7 +181,7 @@ export default function PricingPage() {
             {/* Free Tier */}
             <PricingCard
               title="Free"
-              price="Free"
+              price="₹0"
               description="For hobbyists."
               icon={<Zap className="h-6 w-6" />}
               color="gray"
@@ -197,7 +197,7 @@ export default function PricingPage() {
             {/* Bronze Tier */}
             <PricingCard
               title="Bronze"
-              price="$9"
+              price="₹199"
               description="For solo developers."
               icon={<Shield className="h-6 w-6" />}
               color="bronze"
@@ -214,7 +214,7 @@ export default function PricingPage() {
             {/* Silver Tier */}
             <PricingCard
               title="Silver"
-              price="$29"
+              price="₹999"
               description="For small teams."
               icon={<Star className="h-6 w-6" />}
               color="silver"
@@ -231,7 +231,7 @@ export default function PricingPage() {
             {/* Gold Tier */}
             <PricingCard
               title="Gold"
-              price="$99"
+              price="₹2,999"
               description="For scaling startups."
               icon={<Crown className="h-6 w-6" />}
               color="gold"
@@ -250,7 +250,7 @@ export default function PricingPage() {
             {/* Diamond Tier */}
             <PricingCard
               title="Diamond"
-              price="$299"
+              price="₹9,999"
               description="For large enterprises."
               icon={<Gem className="h-6 w-6" />}
               color="diamond"
@@ -312,6 +312,29 @@ export default function PricingPage() {
               </p>
             </div>
           </div>
+
+          {/* Student Discount Banner */}
+          <motion.div
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true }}
+            variants={fadeInUp}
+            className="mt-20 p-8 rounded-3xl bg-linear-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30 text-center"
+          >
+            <h3 className="text-2xl font-bold text-white mb-4">
+              🎓 Student Discount Pack
+            </h3>
+            <p className="text-gray-300 max-w-2xl mx-auto mb-6">
+              We believe in the power of students. Verify your status and get up
+              to 80% off on all paid plans to build your dreams.
+            </p>
+            <Link
+              href="/contact"
+              className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-500 transition-colors"
+            >
+              Claim Student Discount <ArrowRight className="h-4 w-4" />
+            </Link>
+          </motion.div>
         </section>
       </main>
 

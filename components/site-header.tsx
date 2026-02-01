@@ -19,16 +19,27 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { logout } from "@/lib/firebase";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 export function SiteHeader() {
   const { user, profile } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleLogout = async () => {
     await logout();
     router.push("/");
   };
+
+  const navLinks = [
+    { href: "/features", label: "Features" },
+    { href: "/how-it-works", label: "How it Works" },
+    { href: "/pricing", label: "Pricing" },
+    { href: "/docs", label: "Docs" },
+    { href: "/contact", label: "Contact" },
+    { href: "/devops", label: "DevOps" },
+  ];
 
   return (
     <header className="fixed top-0 z-50 w-full border-b border-white/5 bg-[#050505]/80 backdrop-blur-md">
@@ -40,30 +51,23 @@ export function SiteHeader() {
           <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 text-white">
             <Layers className="h-5 w-5" />
           </div>
-          <span>ZeroOps</span>
+          <span className={cn(pathname === "/" && "text-blue-400")}>
+            ZeroOps
+          </span>
         </Link>
         <nav className="hidden md:flex items-center gap-8 text-md text-gray-200">
-          <Link href="/features" className="hover:text-white transition-colors">
-            Features
-          </Link>
-          <Link
-            href="/how-it-works"
-            className="hover:text-white transition-colors"
-          >
-            How it Works
-          </Link>
-          <Link href="/pricing" className="hover:text-white transition-colors">
-            Pricing
-          </Link>
-          <Link href="/docs" className="hover:text-white transition-colors">
-            Docs
-          </Link>
-          <Link href="/contact" className="hover:text-white transition-colors">
-            Contact
-          </Link>
-          <Link href="/devops" className="hover:text-white transition-colors">
-            DevOps
-          </Link>
+          {navLinks.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className={cn(
+                "hover:text-white transition-colors",
+                pathname === link.href && "text-blue-400 font-semibold"
+              )}
+            >
+              {link.label}
+            </Link>
+          ))}
         </nav>
         <div className="flex items-center gap-4">
           {user ? (
