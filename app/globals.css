@@ -87,9 +87,8 @@
 }
 
 @theme inline {
-  --font-sans: "Geist", "Geist Fallback";
-  --font-sans: "Geist", "Geist Fallback";
-  --font-mono: var(--font-mono);
+  --font-sans: var(--font-outfit);
+  --font-mono: var(--font-outfit);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);

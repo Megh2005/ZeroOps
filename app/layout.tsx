@@ -4,7 +4,7 @@ import "./globals.css";
 import { AuthProvider } from "@/components/auth-provider";
 import { AuthGuard } from "@/components/auth-guard";
 import { Toaster } from "sonner";
-import { Quantico, JetBrains_Mono } from "next/font/google";
+import { Outfit } from "next/font/google";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 
 export const metadata: Metadata = {
@@ -13,15 +13,9 @@ export const metadata: Metadata = {
     "Visual drag-and-drop infrastructure designer with Terraform export",
 };
 
-const rubik = Quantico({
+const outfit = Outfit({
   subsets: ["latin"],
-  weight: ["400"],
-  variable: "--font-rubik",
-});
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ["latin"],
-  variable: "--font-mono",
+  variable: "--font-outfit",
 });
 
 export default function RootLayout({
@@ -31,7 +25,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${rubik.className} ${jetbrainsMono.variable} bg-transparent text-zinc-100 min-h-screen selection:bg-blue-500/30`}>
+      <body className={`${outfit.variable} ${outfit.className} bg-transparent text-zinc-100 min-h-screen selection:bg-blue-500/30`}>
         {/* Global Formal Background */}
         <div className="fixed inset-0 z-[-1] h-full w-full bg-[#09090b]">
           <div className="absolute inset-0 bg-[linear-gradient(to_right,#80808012_1px,transparent_1px),linear-gradient(to_bottom,#80808012_1px,transparent_1px)] bg-[size:24px_24px]"></div>
