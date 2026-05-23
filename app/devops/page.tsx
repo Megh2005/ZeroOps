@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, forwardRef } from "react";
+import { useReactToPrint } from "react-to-print";
 import { debugTerraform, getArchitecturalSuggestions } from "@/lib/gemini";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,13 +12,39 @@ import {
   CheckCircle2,
   Sparkles,
   ArrowRight,
-  Activity
+  Activity,
+  Printer
 } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { motion, AnimatePresence } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { toast } from "sonner";
+
+const PrintableReport = forwardRef<HTMLDivElement, { title: string; content: string }>(({ title, content }, ref) => {
+  return (
+    <div ref={ref} className="p-16 bg-white text-black min-h-screen font-sans">
+      <div className="border-b-2 border-black pb-8 mb-10 flex justify-between items-end">
+        <div>
+          <h1 className="text-4xl font-bold tracking-tight text-black mb-1">ZEROOPS CORE</h1>
+          <p className="text-sm text-gray-500 font-mono uppercase tracking-widest">Enterprise Infrastructure Report</p>
+        </div>
+        <div className="text-right text-xs text-gray-500 font-mono uppercase tracking-widest">
+          {new Date().toLocaleDateString()} <br />
+          {new Date().toLocaleTimeString()}
+        </div>
+      </div>
+      <h2 className="text-2xl font-bold text-black mb-8 border-b border-gray-200 pb-4">{title}</h2>
+      <div className="prose prose-sm max-w-none prose-headings:text-black prose-p:text-gray-800 prose-li:text-gray-800 prose-strong:text-black prose-code:text-blue-700 font-sans leading-relaxed">
+        <MarkdownRenderer content={content} isPrint={true} />
+      </div>
+      <div className="mt-20 pt-8 border-t-2 border-black text-center text-[10px] text-gray-500 font-mono uppercase tracking-widest">
+        Confidential & Proprietary • ZeroOps System Intelligence
+      </div>
+    </div>
+  );
+});
+PrintableReport.displayName = "PrintableReport";
 
 export default function DevOpsPage() {
   const [activeTab, setActiveTab] = useState<"terraform" | "architecture">("terraform");
@@ -28,6 +55,19 @@ export default function DevOpsPage() {
   const [archDescription, setArchDescription] = useState("");
   const [archOutput, setArchOutput] = useState("");
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+
+  const terraformPrintRef = useRef<HTMLDivElement>(null);
+  const archPrintRef = useRef<HTMLDivElement>(null);
+
+  const handlePrintTerraform = useReactToPrint({
+    contentRef: terraformPrintRef,
+    documentTitle: "Terraform-Analysis-Report",
+  });
+
+  const handlePrintArchitecture = useReactToPrint({
+    contentRef: archPrintRef,
+    documentTitle: "Architecture-Design-Report",
+  });
 
   const handleDebug = async () => {
     if (!terraformCode.trim()) return;
@@ -77,141 +117,6 @@ export default function DevOpsPage() {
     } finally {
       setIsAnalyzing(false);
     }
-  };
-
-  const exportToPDF = async (title: string, content: string) => {
-    const { jsPDF } = await import("jspdf");
-    const doc = new jsPDF();
-
-    // Config
-    const margin = 20;
-    const pageWidth = doc.internal.pageSize.getWidth();
-    const contentWidth = pageWidth - margin * 2;
-    let y = 35;
-
-    // Theme color based on title (always slate/zinc in new theme)
-    const themeColor = [161, 161, 170]; // Zinc 400
-
-    // Background
-    doc.setFillColor(9, 9, 11);
-    doc.rect(0, 0, 210, 297, "F");
-
-    // Header Branding
-    doc.setFillColor(themeColor[0], themeColor[1], themeColor[2]);
-    doc.rect(margin, 15, 2, 12, "F"); // Decorative monogram bar
-
-    doc.setTextColor(255, 255, 255);
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(22);
-    doc.text("ZEROOPS CORE", margin + 5, 23);
-
-    doc.setFontSize(9);
-    doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
-    doc.text("ENTERPRISE INFRASTRUCTURE REPORT", margin + 5, 28);
-
-    doc.setDrawColor(39, 39, 42); // zinc 800
-    doc.line(margin, 35, pageWidth - margin, 35);
-
-    // Document Title
-    doc.setTextColor(255, 255, 255);
-    doc.setFontSize(16);
-    doc.text(title, margin, 48);
-    y = 58;
-
-    // Initial Font
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(10);
-    doc.setTextColor(212, 212, 216); // zinc 300
-
-    const cleanContent = content.replace(
-      /```[\s\S]*?```/g,
-      "\n[CODE BLOCK - EXPORTED AS PNG SEPARATELY]\n",
-    );
-    const lines = cleanContent.split("\n");
-
-    const checkPage = (height: number) => {
-      if (y + height > 275) {
-        doc.addPage();
-        doc.setFillColor(9, 9, 11);
-        doc.rect(0, 0, 210, 297, "F");
-        y = 25;
-        return true;
-      }
-      return false;
-    };
-
-    lines.forEach((line) => {
-      if (!line.trim()) {
-        y += 4;
-        return;
-      }
-
-      if (line.startsWith("## ")) {
-        checkPage(15);
-        y += 5;
-        doc.setFontSize(14);
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
-        doc.text(line.replace("## ", "").toUpperCase(), margin, y);
-        y += 8;
-        doc.setFontSize(10);
-        doc.setFont("helvetica", "normal");
-        doc.setTextColor(212, 212, 216);
-      } else if (line.startsWith("### ")) {
-        checkPage(12);
-        doc.setFontSize(11);
-        doc.setFont("helvetica", "bold");
-        doc.setTextColor(255, 255, 255);
-        doc.text(line.replace("### ", ""), margin, y);
-        y += 7;
-        doc.setFontSize(10);
-        doc.setFont("helvetica", "normal");
-        doc.setTextColor(212, 212, 216);
-      } else if (line.trim().startsWith("- ") || line.trim().startsWith("* ")) {
-        const itemText = "• " + line.trim().substring(2);
-        const splitItem = doc.splitTextToSize(itemText, contentWidth - 8);
-        checkPage(splitItem.length * 5.5);
-        doc.text(splitItem, margin + 5, y);
-        y += splitItem.length * 5.5;
-      } else if (line.trim().startsWith("---")) {
-        checkPage(10);
-        doc.setDrawColor(39, 39, 42);
-        doc.line(margin, y, pageWidth - margin, y);
-        y += 8;
-      } else if (line.includes("[CODE BLOCK")) {
-        checkPage(10);
-        doc.setFillColor(24, 24, 27); // zinc 900
-        doc.setDrawColor(63, 63, 70); // zinc 700
-        doc.rect(margin, y - 4, contentWidth, 8, "FD");
-        doc.setFontSize(8);
-        doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
-        doc.text(line.trim(), margin + 5, y + 1);
-        y += 10;
-        doc.setFontSize(10);
-        doc.setTextColor(212, 212, 216);
-      } else {
-        let text = line.replace(/\*\*(.*?)\*\*/g, "$1");
-        const splitText = doc.splitTextToSize(text, contentWidth);
-        checkPage(splitText.length * 5.5);
-        doc.text(splitText, margin, y);
-        y += splitText.length * 5.5;
-      }
-    });
-
-    const totalPages = (doc as any).internal.getNumberOfPages();
-    for (let i = 1; i <= totalPages; i++) {
-      doc.setPage(i);
-      doc.setFontSize(8);
-      doc.setTextColor(113, 113, 122); // zinc 500
-      doc.text(
-        `ZEROOPS CORE • PAGE ${i} OF ${totalPages}`,
-        pageWidth / 2,
-        285,
-        { align: "center" },
-      );
-    }
-
-    doc.save(`${title.toLowerCase().replace(/\s+/g, "-")}.pdf`);
   };
 
   return (
@@ -398,22 +303,20 @@ export default function DevOpsPage() {
                           <CheckCircle2 className="w-5 h-5" /> Synthesis Complete
                         </div>
                         <Button
-                          onClick={() =>
-                            exportToPDF(
-                              "Terraform Analysis Report",
-                              terraformOutput,
-                            )
-                          }
-                          variant="ghost"
+                          onClick={handlePrintTerraform}
+                          variant="outline"
                           size="sm"
-                          className="text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100 text-xs font-mono"
+                          className="text-zinc-300 hover:text-white bg-zinc-800/50 hover:bg-zinc-700/50 border-zinc-700 text-xs font-mono"
                         >
-                          <ArrowRight className="w-3 h-3 mr-2 rotate-45" />{" "}
-                          Export Report
+                          <Printer className="w-3 h-3 mr-2" />
+                          Print / Export PDF
                         </Button>
                       </div>
                       <div className="text-zinc-300 text-sm font-mono leading-relaxed">
                         <MarkdownRenderer content={terraformOutput} />
+                      </div>
+                      <div style={{ display: "none" }}>
+                        <PrintableReport ref={terraformPrintRef} title="Terraform Analysis Report" content={terraformOutput} />
                       </div>
                     </div>
                   </motion.div>
@@ -517,22 +420,20 @@ export default function DevOpsPage() {
                           <Sparkles className="w-5 h-5" /> Recommendation
                         </div>
                         <Button
-                          onClick={() =>
-                            exportToPDF(
-                              "Architecture Design Report",
-                              archOutput,
-                            )
-                          }
-                          variant="ghost"
+                          onClick={handlePrintArchitecture}
+                          variant="outline"
                           size="sm"
-                          className="text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100 text-xs font-mono"
+                          className="text-zinc-300 hover:text-white bg-zinc-800/50 hover:bg-zinc-700/50 border-zinc-700 text-xs font-mono"
                         >
-                          <ArrowRight className="w-3 h-3 mr-2 rotate-45" />{" "}
-                          Export Report
+                          <Printer className="w-3 h-3 mr-2" />
+                          Print / Export PDF
                         </Button>
                       </div>
                       <div className="text-zinc-300 text-sm font-mono leading-relaxed">
                         <MarkdownRenderer content={archOutput} />
+                      </div>
+                      <div style={{ display: "none" }}>
+                        <PrintableReport ref={archPrintRef} title="Architecture Design Report" content={archOutput} />
                       </div>
                     </div>
                   </motion.div>

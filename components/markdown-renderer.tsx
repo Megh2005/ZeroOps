@@ -6,6 +6,7 @@ import { Download } from "lucide-react";
 
 interface MarkdownRendererProps {
   content: string;
+  isPrint?: boolean;
 }
 
 // Custom plugin to group H2 sections into cards
@@ -16,38 +17,32 @@ const rehypeCardGroups = () => {
 
     for (const child of tree.children) {
       if (child.type === "element" && child.tagName === "h2") {
-        // If there's an existing card, push it
         if (currentCard) {
           newChildren.push(currentCard);
         }
-        // Start a new card
         currentCard = {
           type: "element",
           tagName: "div",
           properties: {
             className: [
-              "bg-white/5 border border-white/10 rounded-xl p-6 mb-6 shadow-lg backdrop-blur-sm card-section hover:border-white/20 transition-colors",
+              "bg-white/5 border border-white/10 rounded-xl p-6 mb-6 shadow-lg backdrop-blur-sm card-section hover:border-white/20 transition-colors print:bg-transparent print:border-none print:shadow-none print:p-0",
             ],
           },
           children: [child],
         };
       } else if (currentCard) {
-        // Add to current card
         currentCard.children.push(child);
       } else {
-        // Handle content before the first H2
-        // If it's just whitespace, ignore
         if (child.type === "text" && !child.value.trim()) {
           newChildren.push(child);
         } else {
-          // Create a default card for intro content
           if (!currentCard) {
             currentCard = {
               type: "element",
               tagName: "div",
               properties: {
                 className: [
-                  "bg-white/5 border border-white/10 rounded-xl p-6 mb-6 shadow-lg backdrop-blur-sm card-section",
+                  "bg-white/5 border border-white/10 rounded-xl p-6 mb-6 shadow-lg backdrop-blur-sm card-section print:bg-transparent print:border-none print:shadow-none print:p-0",
                 ],
               },
               children: [],
@@ -66,7 +61,7 @@ const rehypeCardGroups = () => {
   };
 };
 
-export function MarkdownRenderer({ content }: MarkdownRendererProps) {
+export function MarkdownRenderer({ content, isPrint = false }: MarkdownRendererProps) {
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
@@ -74,55 +69,68 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
       components={{
         h1: ({ ...props }) => (
           <h1
-            className="text-3xl font-bold text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-purple-400 mb-6 border-b border-white/10 pb-4"
+            className={isPrint ? "text-2xl font-bold text-black mb-4 border-b border-gray-300 pb-2" : "text-3xl font-bold text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-purple-400 mb-6 border-b border-white/10 pb-4"}
             {...props}
           />
         ),
         h2: ({ ...props }) => (
           <h2
-            className="text-xl font-bold text-blue-300 mb-4 flex items-center gap-2 border-b border-white/5 pb-2"
+            className={isPrint ? "text-xl font-bold text-black mb-2 flex items-center gap-2 border-b border-gray-200 pb-1" : "text-xl font-bold text-blue-300 mb-4 flex items-center gap-2 border-b border-white/5 pb-2"}
             {...props}
           />
         ),
         h3: ({ ...props }) => (
           <h3
-            className="text-lg font-semibold text-purple-300 mt-4 mb-2"
+            className={isPrint ? "text-lg font-semibold text-black mt-4 mb-2" : "text-lg font-semibold text-purple-300 mt-4 mb-2"}
             {...props}
           />
         ),
         p: ({ ...props }) => (
           <p
-            className="text-gray-300 leading-relaxed mb-4 text-sm"
+            className={isPrint ? "text-black leading-relaxed mb-4 text-sm" : "text-gray-300 leading-relaxed mb-4 text-sm"}
             {...props}
           />
         ),
         ul: ({ ...props }) => (
           <ul
-            className="list-disc list-outside ml-5 mb-4 text-gray-300 space-y-2 text-sm"
+            className={isPrint ? "list-disc list-outside ml-5 mb-4 text-black space-y-2 text-sm" : "list-disc list-outside ml-5 mb-4 text-gray-300 space-y-2 text-sm"}
             {...props}
           />
         ),
         ol: ({ ...props }) => (
           <ol
-            className="list-decimal list-outside ml-5 mb-4 text-gray-300 space-y-2 text-sm"
+            className={isPrint ? "list-decimal list-outside ml-5 mb-4 text-black space-y-2 text-sm" : "list-decimal list-outside ml-5 mb-4 text-gray-300 space-y-2 text-sm"}
             {...props}
           />
         ),
         li: ({ ...props }) => <li className="pl-1" {...props} />,
         code: ({ className, children, ...props }: any) => {
           const match = /language-(\w+)/.exec(className || "");
-          const content = String(children);
-          const isMultiLine = content.includes("\n");
+          const contentStr = String(children);
+          const isMultiLine = contentStr.includes("\n");
           const isBlock = match || className?.includes("hljs") || isMultiLine;
 
           if (!isBlock) {
             return (
               <code
-                className="bg-white/10 text-orange-200 px-1.5 py-0.5 rounded text-xs font-mono border border-white/5"
+                className={isPrint ? "bg-gray-100 text-black px-1.5 py-0.5 rounded text-xs font-mono border border-gray-300" : "bg-white/10 text-orange-200 px-1.5 py-0.5 rounded text-xs font-mono border border-white/5"}
                 {...props}
               >
                 {children}
               </code>
+            );
+          }
+
+          if (isPrint) {
+            return (
+              <div className="my-4 rounded border border-gray-300 bg-gray-50 p-4">
+                <code
+                  className="block text-sm font-mono text-black whitespace-pre-wrap"
+                  {...props}
+                >
+                  {children}
+                </code>
+              </div>
             );
           }
 
@@ -185,41 +193,41 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
         ),
         blockquote: ({ ...props }) => (
           <blockquote
-            className="border-l-4 border-yellow-500/50 pl-4 italic text-gray-400 my-4 bg-yellow-500/5 p-4 rounded-r-lg"
+            className={isPrint ? "border-l-4 border-gray-400 pl-4 italic text-black my-4 bg-gray-100 p-4" : "border-l-4 border-yellow-500/50 pl-4 italic text-gray-400 my-4 bg-yellow-500/5 p-4 rounded-r-lg"}
             {...props}
           />
         ),
         a: ({ ...props }) => (
           <a
-            className="text-blue-400 hover:text-blue-300 underline underline-offset-4 decoration-blue-400/30 transition-colors"
+            className={isPrint ? "text-blue-600 underline" : "text-blue-400 hover:text-blue-300 underline underline-offset-4 decoration-blue-400/30 transition-colors"}
             {...props}
           />
         ),
         table: ({ ...props }) => (
-          <div className="overflow-x-auto my-6 rounded-lg border border-white/10">
+          <div className={isPrint ? "my-6" : "overflow-x-auto my-6 rounded-lg border border-white/10"}>
             <table
-              className="w-full text-left text-sm text-gray-400"
+              className={isPrint ? "w-full text-left text-sm text-black border-collapse" : "w-full text-left text-sm text-gray-400"}
               {...props}
             />
           </div>
         ),
         thead: ({ ...props }) => (
-          <thead className="bg-white/5 text-gray-200 uppercase" {...props} />
+          <thead className={isPrint ? "bg-gray-100 text-black uppercase border-b border-gray-300" : "bg-white/5 text-gray-200 uppercase"} {...props} />
         ),
         th: ({ ...props }) => (
           <th
-            className="px-6 py-3 font-medium border-b border-white/10"
+            className={isPrint ? "px-6 py-3 font-semibold border-b border-gray-300" : "px-6 py-3 font-medium border-b border-white/10"}
             {...props}
           />
         ),
         td: ({ ...props }) => (
           <td
-            className="px-6 py-4 border-b border-white/10 whitespace-nowrap"
+            className={isPrint ? "px-6 py-4 border-b border-gray-200" : "px-6 py-4 border-b border-white/10 whitespace-nowrap"}
             {...props}
           />
         ),
         hr: ({ ...props }) => (
-          <hr className="my-6 border-white/10" {...props} />
+          <hr className={isPrint ? "my-6 border-gray-300" : "my-6 border-white/10"} {...props} />
         ),
       }}
     >
