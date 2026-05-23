@@ -14,6 +14,7 @@ import {
   Trash2,
   RotateCcw,
   Book,
+  UploadCloud,
 } from "lucide-react";
 import { ThemeToggle } from "./theme-provider";
 import { Button } from "@/components/ui/button";
@@ -157,6 +158,17 @@ export function Toolbar({
               )}
             </Button>
           </motion.div>
+
+          <Link href="/code-to-builder">
+            <Button
+              variant="outline"
+              size="sm"
+              className="gap-2 bg-blue-500/10 hover:bg-blue-500/20 text-blue-400 border-blue-500/20"
+            >
+              <UploadCloud className="w-4 h-4" />
+              <span className="hidden sm:inline">Import Code</span>
+            </Button>
+          </Link>
 
           <Button
             size="sm"

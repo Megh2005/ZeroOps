@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect } from "react"
 import { useRouter } from "next/navigation"
 import { AnimatePresence } from "framer-motion"
+import { toast } from "sonner"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Sidebar } from "@/components/sidebar"
 import { Canvas } from "@/components/canvas"
@@ -28,6 +29,25 @@ export function ArchitectureBuilder() {
     const cost = components.reduce((sum, c) => sum + c.cost, 0)
     setTotalCost(cost)
   }, [components])
+
+  // Load imported architecture from Code-to-Builder page
+  useEffect(() => {
+    try {
+      const importedData = sessionStorage.getItem("imported_architecture")
+      if (importedData) {
+        const parsed = JSON.parse(importedData)
+        if (Array.isArray(parsed.components)) {
+          setComponents(parsed.components)
+          setConnections(Array.isArray(parsed.connections) ? parsed.connections : [])
+          sessionStorage.removeItem("imported_architecture")
+          toast.success("Architecture successfully imported!")
+        }
+      }
+    } catch (err) {
+      console.error("Failed to load imported architecture", err)
+      toast.error("Failed to load imported architecture.")
+    }
+  }, [])
 
   const handleAddComponent = useCallback((component: CanvasComponent) => {
     setComponents((prev) => [...prev, component])

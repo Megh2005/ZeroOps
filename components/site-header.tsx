@@ -40,6 +40,7 @@ export function SiteHeader() {
     { href: "/contact", label: "Contact" },
     { href: "/devops", label: "DevOps" },
     { href: "/devops-bot", label: "LearnON" },
+    { href: "/code-to-builder", label: "Code to Builder" },
   ];
 
   return (
