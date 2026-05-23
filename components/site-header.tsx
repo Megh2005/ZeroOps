@@ -43,6 +43,10 @@ export function SiteHeader() {
     { href: "/code-to-builder", label: "Code to Builder" },
   ];
 
+  if (pathname === "/builder") {
+    return null;
+  }
+
   return (
     <header className="fixed top-0 z-50 w-full border-b border-white/5 bg-[#050505]/80 backdrop-blur-md">
       <div className="max-w-[80vw] mx-auto flex h-16 items-center justify-between px-6">
