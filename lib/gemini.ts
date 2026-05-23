@@ -9,7 +9,7 @@ let model: any = null;
 
 if (apiKey) {
     genAI = new GoogleGenerativeAI(apiKey);
-    model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    model = genAI.getGenerativeModel({ model: "gemini-3.5-flash" });
 }
 
 export async function debugTerraform(code: string): Promise<string> {
@@ -20,6 +20,11 @@ export async function debugTerraform(code: string): Promise<string> {
     const prompt = `You are an expert DevOps engineer and a Google Cloud Platform (GCP) Terraform specialist. 
   Please analyze the following Terraform code for errors, best practices (specifically for GCP), and security vulnerabilities. 
   Focus on the 'google cloude' and 'gcp' providers.
+  
+  CRITICAL GUIDELINES:
+  1. Ignore any placeholder values (e.g., "YOUR_BACKEND_SERVICE", "enter your project id", "your-region"). Do NOT treat them as errors or invalid references.
+  2. When generating the corrected code, DO NOT include any comments whatsoever.
+  3. Ensure the corrected code is perfectly formatted with proper indentation (2 spaces) and strict, consistent line spacing/scheme.
   
   Format your response in structured Markdown.
   Use the following sections, and ensure each section starts with an H2 (##) header:
@@ -100,6 +105,14 @@ export async function validateTerraform(code: string): Promise<string> {
     If it is correct, start with "✅ VALID".
     If there are errors, start with "❌ INVALID" and list them.
     
+    CRITICAL: 
+    - Do NOT consider missing values, or ANY placeholder strings (e.g. "YOUR_BACKEND_SERVICE", "your-project-id", etc.) as errors. Ignore them entirely.
+    - ONLY check if the rest of the code is structurally valid.
+    
+    COST CHECK:
+    - You must also quickly analyze if the resources could be cheaper (e.g., using a high-tier instance instead of e2-micro, not using spot instances where applicable).
+    - If you strongly believe the code is NOT cost-optimized, include the exact string "COST_OPTIMIZATION_REQUIRED" anywhere in your response.
+    
     Code:
     \`\`\`hcl
     ${code}
@@ -125,8 +138,10 @@ export async function optimizeTerraform(code: string): Promise<{ optimizedCode: 
     
     GUIDELINES:
     1. Focus on cost-saving on Google Cloud (GCP): Suggest e2-micro, spot instances, lifecycle rules, etc.
-    2. Dynamic Variables: The absence of hardcoded 'project_id', 'region', or specific 'constants' is NOT an error. It is a DESIGN CHOICE to make the code reusable. Ignore these as "errors" and focus on functional optimization.
-    3. Ensure the code is syntactically correct and can be rendered visually.
+    2. Dynamic Variables & Placeholders: The use of placeholders (like "YOUR_BACKEND_SERVICE", "your-project-id") is a DESIGN CHOICE. Do NOT treat them as errors.
+    3. CRITICAL: DO NOT replace placeholders with actual values. Leave placeholders exactly as they are. Rather, work ONLY on the rest of the code to make it cost friendly.
+    4. Code Formatting: The output optimized code MUST contain NO COMMENTS. It must be perfectly formatted using strict indentation (2 spaces) and proper line spacing.
+    5. CRITICAL: DO NOT use markdown code blocks (e.g. \`\`\`hcl) inside the optimizedCode string. The optimizedCode MUST be pure, raw plain text.
     
     OUTPUT FORMAT:
     You MUST return a valid JSON object. Do not include any markdown formatting like \`\`\`json blocks in the actual response text, just the raw JSON.
@@ -158,7 +173,12 @@ export async function optimizeTerraform(code: string): Promise<{ optimizedCode: 
         const jsonString = text.substring(firstBrace, lastBrace + 1);
 
         try {
-            return JSON.parse(jsonString);
+            const parsed = JSON.parse(jsonString);
+            if (parsed.optimizedCode) {
+                // Strip any accidental markdown formatting the AI might have included
+                parsed.optimizedCode = parsed.optimizedCode.replace(/^```[a-z]*\n/im, "").replace(/\n```$/im, "").trim();
+            }
+            return parsed;
         } catch (parseError) {
             console.error("Initial JSON parse failed, attempting cleanup:", jsonString);
             // Fallback: simple cleanup of common AI formatting mistakes

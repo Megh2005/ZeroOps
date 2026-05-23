@@ -86,6 +86,10 @@
   --canvas: oklch(0.18 0 0); /* #1A1A1A */
 }
 
+button{
+  cursor: pointer;
+}
+
 @theme inline {
   --font-sans: var(--font-outfit);
   --font-mono: var(--font-outfit);

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useCallback, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { AnimatePresence } from "framer-motion"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Sidebar } from "@/components/sidebar"
@@ -8,7 +9,6 @@ import { Canvas } from "@/components/canvas"
 import { Toolbar } from "@/components/toolbar"
 import { ConfigPanel } from "@/components/config-panel"
 import { ValidationModal } from "@/components/validation-modal"
-import { TerraformModal } from "@/components/terraform-modal"
 import { validateArchitecture } from "@/lib/validator"
 import { generateTerraform } from "@/lib/terraform-generator"
 import { exampleComponents, exampleConnections } from "@/lib/example-architecture"
@@ -16,13 +16,12 @@ import { calculateClosestAnchors } from "@/lib/utils"
 import type { CanvasComponent, Connection, ValidationResult } from "@/types/architecture";
 
 export function ArchitectureBuilder() {
+  const router = useRouter()
   const [components, setComponents] = useState<CanvasComponent[]>(exampleComponents)
   const [connections, setConnections] = useState<Connection[]>(exampleConnections)
   const [selectedComponent, setSelectedComponent] = useState<CanvasComponent | null>(null)
   const [showValidation, setShowValidation] = useState(false)
-  const [showTerraform, setShowTerraform] = useState(false)
   const [validationResult, setValidationResult] = useState<ValidationResult | null>(null)
-  const [terraformCode, setTerraformCode] = useState("")
   const [totalCost, setTotalCost] = useState(0)
 
   useEffect(() => {
@@ -92,9 +91,9 @@ export function ArchitectureBuilder() {
 
   const handleGenerateTerraform = useCallback(() => {
     const code = generateTerraform(components, connections)
-    setTerraformCode(code)
-    setShowTerraform(true)
-  }, [components, connections])
+    sessionStorage.setItem("terraform_code", code)
+    router.push("/terraform-view")
+  }, [components, connections, router])
 
   const handleClearCanvas = useCallback(() => {
     setComponents([])
@@ -148,10 +147,6 @@ export function ArchitectureBuilder() {
           {showValidation && validationResult && (
             <ValidationModal result={validationResult} onClose={() => setShowValidation(false)} />
           )}
-        </AnimatePresence>
-
-        <AnimatePresence>
-          {showTerraform && <TerraformModal code={terraformCode} onClose={() => setShowTerraform(false)} />}
         </AnimatePresence>
       </div>
     </ThemeProvider>
