@@ -21,7 +21,7 @@ This project means a lot to me because it bridges the gap between infrastructure
 
 ## Demo
 
-**Live Project URL:** <!-- [LIVE_PREVIEW_LINK_PLACEHOLDER: Insert your Vercel/production link here] -->
+**Live Project URL:** [zero-ops-cyan.vercel.app](https://zero-ops-cyan.vercel.app/)
 
 **Video Walkthrough:** <!-- [YOUTUBE_LINK_PLACEHOLDER: Insert your YouTube demo link here] -->
 
