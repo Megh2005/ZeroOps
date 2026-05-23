@@ -2,10 +2,11 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useRouter } from "next/navigation";
-import { signInWithGoogle, auth } from "@/lib/firebase"; // Ensure auth is exported from lib/firebase
+import { signInWithGoogle, auth } from "@/lib/firebase";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Button } from "@/components/ui/button";
-import { Loader2, CheckCircle2 } from "lucide-react";
+import { Loader2, CheckCircle2, KeyRound } from "lucide-react";
+import { SiteHeader } from "@/components/site-header";
 
 export default function AuthPage() {
   const [user, loading] = useAuthState(auth);
@@ -44,56 +45,51 @@ export default function AuthPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050505] flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-blue-500" />
+      <div className="min-h-screen bg-transparent flex items-center justify-center">
+        <Loader2 className="w-6 h-6 animate-spin text-zinc-500" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white selection:bg-blue-500/30  flex items-center justify-center p-4">
-      {/* Background Effects */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] h-[500px] w-[500px] rounded-full bg-purple-600/20 blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] h-[500px] w-[500px] rounded-full bg-blue-600/20 blur-[120px]" />
-        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center mask-[linear-gradient(180deg,white,rgba(255,255,255,0))]" />
-      </div>
+    <div className="min-h-screen bg-transparent text-zinc-100 selection:bg-blue-500/30 flex items-center justify-center p-4">
+      <SiteHeader />
 
       <motion.div
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
-        className="relative z-10 w-full max-w-sm"
+        className="relative z-10 w-full max-w-sm mt-16"
       >
-        <div className="overflow-hidden rounded-3xl border border-white/10 bg-[#0D0D0D] p-8 shadow-2xl shadow-blue-900/10 backdrop-blur-xl">
+        <div className="overflow-hidden rounded-2xl border border-zinc-800/80 bg-zinc-900/20 p-8 shadow-2xl backdrop-blur-2xl">
           <AnimatePresence mode="wait">
             {user ? (
               <motion.div
                 key="authenticated"
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 15 }}
                 animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -20 }}
+                exit={{ opacity: 0, y: -15 }}
                 className="text-center"
               >
                 <div className="mb-6 flex justify-center">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-full bg-green-500/10 text-green-500 ring-1 ring-green-500/20">
-                    <CheckCircle2 className="w-8 h-8" />
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+                    <CheckCircle2 className="w-6 h-6" />
                   </div>
                 </div>
-                <h1 className="text-2xl font-bold  mb-2">Already Signed In</h1>
-                <p className="text-gray-400 mb-6">
-                  You are already authenticated as <br />
-                  <span className="text-white font-medium">{user.email}</span>
+                <h1 className="text-xl font-semibold tracking-tight text-zinc-100 mb-2">Authentication Verified</h1>
+                <p className="text-zinc-400 text-xs mb-6">
+                  Session established for <br />
+                  <span className="text-zinc-200 font-mono mt-1 block">{user.email}</span>
                 </p>
-                <div className="w-full bg-white/5 rounded-full h-1 mb-4 overflow-hidden">
+                <div className="w-full bg-zinc-800/50 rounded-full h-1 mb-4 overflow-hidden">
                   <motion.div
-                    className="h-full bg-blue-500"
+                    className="h-full bg-emerald-500"
                     initial={{ width: "100%" }}
                     animate={{ width: "0%" }}
                     transition={{ duration: 3, ease: "linear" }}
                   />
                 </div>
-                <p className="text-sm text-gray-500">
-                  Redirecting to home in {countdown}s...
+                <p className="text-[10px] font-mono text-zinc-500 uppercase tracking-widest">
+                  Redirecting in {countdown}s...
                 </p>
               </motion.div>
             ) : (
@@ -104,29 +100,28 @@ export default function AuthPage() {
                 exit={{ opacity: 0 }}
               >
                 <div className="mb-8 flex justify-center">
-                  <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-blue-500/10 text-blue-400 ring-1 ring-blue-500/20">
-                    <span className="text-3xl">⚡</span>
+                  <div className="flex h-14 w-14 items-center justify-center rounded-xl border border-zinc-800 bg-zinc-950 text-zinc-300 shadow-sm">
+                    <KeyRound className="w-6 h-6" />
                   </div>
                 </div>
 
                 <div className="text-center mb-8">
-                  <h1 className="text-2xl font-bold  mb-2">Welcome Back</h1>
-                  <p className="text-gray-400">
-                    Sign in to continue architecting
+                  <h1 className="text-xl font-semibold tracking-tight text-zinc-100 mb-2">Secure Access</h1>
+                  <p className="text-zinc-500 text-xs">
+                    Authenticate to access infrastructure canvas
                   </p>
                 </div>
 
                 <Button
                   onClick={handleSignIn}
                   disabled={isLoading}
-                  className="w-full h-12 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-semibold transition-all hover:scale-[1.02] hover:shadow-lg hover:shadow-blue-600/25 relative overflow-hidden group"
+                  className="w-full h-12 rounded border border-zinc-800 bg-zinc-100 hover:bg-white text-zinc-900 text-xs font-semibold transition-all relative overflow-hidden"
                 >
-                  <div className="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                   {isLoading ? (
-                    <Loader2 className="w-5 h-5 animate-spin relative z-10" />
+                    <Loader2 className="w-4 h-4 animate-spin relative z-10" />
                   ) : (
                     <div className="flex items-center justify-center gap-3 relative z-10">
-                      <svg className="w-5 h-5" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4" viewBox="0 0 24 24">
                         <path
                           fill="currentColor"
                           d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -144,14 +139,14 @@ export default function AuthPage() {
                           d="M12 4.6c1.61 0 3.09.56 4.23 1.64l3.18-3.18C17.46 1.15 14.97 0 12 0 7.7 0 3.99 2.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
                         />
                       </svg>
-                      Sign in with Google
+                      Authenticate via Google
                     </div>
                   )}
                 </Button>
 
-                <p className="mt-6 text-center text-xs text-gray-500">
-                  By signing in, you agree to our Terms of Service and Privacy
-                  Policy.
+                <p className="mt-6 text-center text-[10px] text-zinc-600 font-mono">
+                  Access requires organizational provisioning. <br/>
+                  Subject to Enterprise Terms.
                 </p>
               </motion.div>
             )}

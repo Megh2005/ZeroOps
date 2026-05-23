@@ -4,20 +4,19 @@ import React from "react";
 import { motion } from "framer-motion";
 import {
   Check,
-  Layers,
-  ArrowRight,
   Zap,
   Shield,
   Star,
   Crown,
   Gem,
+  ArrowRight
 } from "lucide-react";
 import Link from "next/link";
 import { SiteHeader } from "@/components/site-header";
 
 const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  hidden: { opacity: 0, y: 15 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
 const staggerContainer = {
@@ -36,7 +35,6 @@ const PricingCard = ({
   description,
   features,
   icon,
-  color = "diamond",
   popular = false,
 }: {
   title: string;
@@ -44,100 +42,59 @@ const PricingCard = ({
   description: string;
   features: string[];
   icon: React.ReactNode;
-  color?: "gray" | "bronze" | "silver" | "gold" | "diamond";
   popular?: boolean;
 }) => {
-  const colorStyles = {
-    gray: {
-      border: "border-white/10",
-      bg: "bg-[#111]",
-      text: "text-gray-400",
-      iconBg: "bg-gray-500/10",
-      iconText: "text-gray-400",
-      button: "bg-white/10 hover:bg-white/20 text-white",
-    },
-    bronze: {
-      border: "border-orange-700/30",
-      bg: "bg-gradient-to-b from-[#1a120b] to-[#111]",
-      text: "text-orange-400",
-      iconBg: "bg-orange-500/10",
-      iconText: "text-orange-400",
-      button:
-        "bg-orange-600/20 hover:bg-orange-600/30 text-orange-400 border border-orange-600/30",
-    },
-    silver: {
-      border: "border-slate-400/30",
-      bg: "bg-gradient-to-b from-[#1a1c20] to-[#111]",
-      text: "text-slate-300",
-      iconBg: "bg-slate-400/10",
-      iconText: "text-slate-300",
-      button:
-        "bg-slate-500/20 hover:bg-slate-500/30 text-slate-300 border border-slate-500/30",
-    },
-    gold: {
-      border: "border-yellow-500/30",
-      bg: "bg-gradient-to-b from-[#1f1a0b] to-[#111]",
-      text: "text-yellow-400",
-      iconBg: "bg-yellow-500/10",
-      iconText: "text-yellow-400",
-      button: "bg-yellow-500 hover:bg-yellow-400 text-black font-bold",
-    },
-    diamond: {
-      border: "border-blue-400/50",
-      bg: "bg-gradient-to-b from-[#0f172a] to-[#111]",
-      text: "text-blue-400",
-      iconBg: "bg-blue-500/10",
-      iconText: "text-blue-400",
-      button:
-        "bg-blue-600 hover:bg-blue-500 text-white font-bold shadow-[0_0_20px_rgba(37,99,235,0.3)]",
-    },
-  };
-
-  const styles = colorStyles[color];
-
   return (
     <motion.div
       variants={fadeInUp}
-      className={`relative flex flex-col rounded-3xl border ${styles.border} ${styles.bg} p-8 transition-transform duration-300 hover:scale-[1.02]`}
+      className={`relative flex flex-col rounded-2xl border bg-zinc-900/10 p-8 backdrop-blur-2xl transition-all duration-300 hover:bg-zinc-900/30 ${
+        popular ? "border-zinc-500/50 shadow-2xl shadow-zinc-900/50" : "border-zinc-800/80"
+      }`}
     >
       {popular && (
-        <div className="absolute -top-4 left-1/2 -translate-x-1/2 rounded-full bg-linear-to-r from-yellow-500 to-orange-500 px-4 py-1 text-xs font-bold uppercase tracking-wider text-black shadow-lg">
-          Most Popular
+        <div className="absolute -top-3 left-1/2 -translate-x-1/2 rounded border border-zinc-700 bg-zinc-800 px-3 py-0.5 text-[10px] font-mono tracking-widest uppercase text-zinc-300 shadow-sm">
+          Recommended
         </div>
       )}
 
       <div className="mb-6 flex items-center gap-4">
         <div
-          className={`flex h-12 w-12 items-center justify-center rounded-xl ${styles.iconBg} ${styles.iconText}`}
+          className={`flex h-10 w-10 items-center justify-center rounded border ${
+            popular ? "border-zinc-600 bg-zinc-800 text-zinc-100" : "border-zinc-800 bg-zinc-950 text-zinc-400"
+          }`}
         >
           {icon}
         </div>
         <div>
-          <h3 className={`text-xl font-bold ${styles.text}`}>{title}</h3>
-          <p className="text-sm text-gray-400">{description}</p>
+          <h3 className="text-lg font-semibold tracking-tight text-zinc-100">{title}</h3>
+          <p className="text-xs text-zinc-500 font-mono">{description}</p>
         </div>
       </div>
 
       <div className="mb-8">
         <div className="flex items-baseline gap-1">
-          <span className="text-4xl font-bold text-white">{price}</span>
-          {price !== "Free" && <span className="text-gray-500">/month</span>}
+          <span className="text-3xl font-semibold tracking-tight text-zinc-100">{price}</span>
+          {price !== "₹0" && <span className="text-xs text-zinc-500 font-mono">/mo</span>}
         </div>
       </div>
 
       <div className="mb-8 flex-1 space-y-4">
         {features.map((feature, i) => (
-          <div key={i} className="flex items-start gap-3 text-sm text-gray-300">
-            <Check className={`h-5 w-5 shrink-0 ${styles.iconText}`} />
+          <div key={i} className="flex items-start gap-3 text-xs text-zinc-300">
+            <Check className={`h-4 w-4 shrink-0 ${popular ? "text-zinc-300" : "text-zinc-500"}`} />
             <span>{feature}</span>
           </div>
         ))}
       </div>
 
       <button
-        className={`w-full rounded-xl py-3 text-sm transition-all ${styles.button}`}
+        className={`w-full rounded h-10 text-xs font-semibold transition-all ${
+          popular
+            ? "bg-zinc-100 text-zinc-900 hover:bg-white"
+            : "bg-zinc-900/50 border border-zinc-800 text-zinc-300 hover:bg-zinc-800"
+        }`}
       >
-        Get Started
+        Select {title}
       </button>
     </motion.div>
   );
@@ -145,28 +102,26 @@ const PricingCard = ({
 
 export default function PricingPage() {
   return (
-    <div className="min-h-screen bg-[#050505] text-white selection:bg-blue-500/30 ">
-      {/* Background Effects */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-20%] left-[-10%] h-[800px] w-[800px] rounded-full bg-purple-900/10 blur-[120px]" />
-        <div className="absolute bottom-[-20%] right-[-10%] h-[800px] w-[800px] rounded-full bg-blue-900/10 blur-[120px]" />
-        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
-      </div>
-
+    <div className="min-h-screen bg-transparent text-zinc-100 selection:bg-blue-500/30">
       <SiteHeader />
 
       <main className="relative z-10 pt-32 pb-20">
-        <section className="max-w-[80vw] mx-auto px-6 text-center mb-20">
+        <section className="max-w-[80vw] mx-auto px-6 text-center mb-20 mt-10">
           <motion.div
             initial="hidden"
             animate="visible"
             variants={fadeInUp}
             className="mx-auto max-w-3xl"
           >
-            <h1 className="mb-6 text-5xl font-bold  md:text-6xl">
-              Simple, Transparent <br />
-              <span className="text-blue-500">Pricing</span>
+            <div className="mb-6 inline-flex items-center gap-2 rounded border border-zinc-800 bg-zinc-900/30 px-3 py-1 text-[10px] font-mono tracking-widest uppercase text-zinc-400 shadow-sm mx-auto">
+              Pricing Matrices
+            </div>
+            <h1 className="mb-6 text-4xl font-semibold tracking-tight md:text-6xl text-zinc-100">
+              Enterprise Licensing
             </h1>
+            <p className="mx-auto max-w-2xl text-sm font-mono text-zinc-400 leading-relaxed">
+              Transparent, scalable infrastructure orchestration costs. No hidden fees.
+            </p>
           </motion.div>
         </section>
 
@@ -180,88 +135,83 @@ export default function PricingPage() {
           >
             {/* Free Tier */}
             <PricingCard
-              title="Free"
+              title="Community"
               price="₹0"
-              description="For hobbyists."
-              icon={<Zap className="h-6 w-6" />}
-              color="gray"
+              description="For solo engineers."
+              icon={<Zap className="h-4 w-4" />}
               features={[
-                "1 Project",
-                "Basic Components",
-                "Community Support",
-                "Standard Export",
-                "Public Templates",
+                "1 Active Architecture",
+                "Core Node Components",
+                "Community Forums",
+                "Standard HCL Export",
+                "Public Templates Only",
               ]}
             />
 
             {/* Bronze Tier */}
             <PricingCard
-              title="Bronze"
+              title="Starter"
               price="₹199"
-              description="For solo developers."
-              icon={<Shield className="h-6 w-6" />}
-              color="bronze"
+              description="For independent contractors."
+              icon={<Shield className="h-4 w-4" />}
               features={[
-                "3 Projects",
-                "All Components",
-                "Email Support",
-                "Terraform Export",
+                "3 Active Architectures",
+                "All Node Components",
+                "Standard SLA Support",
+                "Terraform Cloud Sync",
                 "Private Templates",
-                "Cost Estimation",
+                "Basic Cost Estimation",
               ]}
             />
 
             {/* Silver Tier */}
             <PricingCard
-              title="Silver"
+              title="Professional"
               price="₹999"
-              description="For small teams."
-              icon={<Star className="h-6 w-6" />}
-              color="silver"
+              description="For small engineering teams."
+              icon={<Star className="h-4 w-4" />}
               features={[
-                "10 Projects",
-                "Priority Support",
-                "Advanced Security",
-                "CI/CD Integration",
-                "Team Collaboration (up to 3)",
-                "Audit Logs",
+                "10 Active Architectures",
+                "Priority Routing Support",
+                "RBAC Security Models",
+                "CI/CD Pipeline Webhooks",
+                "3 Seat Licenses",
+                "30-day Audit Logs",
               ]}
             />
 
             {/* Gold Tier */}
             <PricingCard
-              title="Gold"
+              title="Enterprise"
               price="₹2,999"
-              description="For scaling startups."
-              icon={<Crown className="h-6 w-6" />}
-              color="gold"
+              description="For scaling organizations."
+              icon={<Crown className="h-4 w-4" />}
               popular={true}
               features={[
-                "Unlimited Projects",
-                "24/7 Priority Support",
-                "Custom Policies",
-                "API Access",
-                "Team Collaboration (Unlimited)",
-                "SSO Integration",
-                "Advanced Analytics",
+                "Unlimited Architectures",
+                "24/7 Severity-1 Support",
+                "Custom Compliance Policies",
+                "Full API Access",
+                "Unlimited Seat Licenses",
+                "SAML/SSO Integration",
+                "Advanced Cost Analytics",
               ]}
             />
 
             {/* Diamond Tier */}
             <PricingCard
-              title="Diamond"
-              price="₹9,999"
-              description="For large enterprises."
-              icon={<Gem className="h-6 w-6" />}
-              color="diamond"
+              title="Dedicated"
+              price="Custom"
+              description="For global enterprises."
+              icon={<Gem className="h-4 w-4" />}
               features={[
-                "Everything in Gold",
-                "Dedicated Account Manager",
-                "Custom SLA",
-                "On-premise Deployment",
-                "Custom Integrations",
-                "Training Sessions",
-                "White-labeling",
+                "Everything in Enterprise",
+                "Dedicated Solutions Architect",
+                "99.99% Uptime SLA",
+                "On-premise / VPC Deployment",
+                "Custom Provider Integrations",
+                "Quarterly Training Sessions",
+                "White-labeling Options",
               ]}
             />
           </motion.div>
@@ -270,77 +220,67 @@ export default function PricingPage() {
         {/* FAQ Section */}
         <section className="max-w-[80vw] mx-auto mt-32 px-6">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-white">
-              Frequently Asked Questions
+            <h2 className="text-2xl font-semibold tracking-tight text-zinc-100">
+              Technical Inquiries
             </h2>
           </div>
-          <div className="grid gap-8 md:grid-cols-4 max-w-[80vw] mx-auto">
-            <div className="bg-[#111] p-8 rounded-3xl border border-white/5">
-              <h3 className="text-lg font-bold text-white mb-2">
-                Can I switch plans later?
-              </h3>
-              <p className="text-gray-400">
-                Yes, you can upgrade or downgrade your plan at any time. Changes
-                take effect immediately.
-              </p>
-            </div>
-            <div className="bg-[#111] p-8 rounded-3xl border border-white/5">
-              <h3 className="text-lg font-bold text-white mb-2">
-                What happens to my projects if I cancel?
-              </h3>
-              <p className="text-gray-400">
-                Your projects will be locked in read-only mode for 30 days
-                before being archived.
-              </p>
-            </div>
-            <div className="bg-[#111] p-8 rounded-3xl border border-white/5">
-              <h3 className="text-lg font-bold text-white mb-2">
-                Do you offer student discounts?
-              </h3>
-              <p className="text-gray-400">
-                Yes! Students with a valid .edu email address can get the Silver
-                plan for free.
-              </p>
-            </div>
-            <div className="bg-[#111] p-8 rounded-3xl border border-white/5">
-              <h3 className="text-lg font-bold text-white mb-2">
-                Is there a refund policy?
-              </h3>
-              <p className="text-gray-400">
-                We offer a 14-day money-back guarantee if you're not satisfied
-                with our service.
-              </p>
-            </div>
+          <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4 max-w-[80vw] mx-auto">
+            {[
+              {
+                q: "Topology Modification",
+                a: "Licensing tiers can be upgraded or downgraded dynamically. Invoice prorations are calculated automatically via stripe."
+              },
+              {
+                q: "Data Retention",
+                a: "If a subscription lapses, topologies remain in a read-only state for 30 days prior to permanent archival deletion."
+              },
+              {
+                q: "Academic Grants",
+                a: "Verified academic institutions (.edu) are automatically granted Professional tier capabilities at zero cost."
+              },
+              {
+                q: "SLA Guarantees",
+                a: "Enterprise agreements include financially-backed SLA guarantees. We refund a percentage of the monthly fee if uptime drops below 99.9%."
+              }
+            ].map((faq, i) => (
+              <div key={i} className="bg-zinc-900/10 backdrop-blur-2xl p-6 rounded-2xl border border-zinc-800/80">
+                <h3 className="text-sm font-semibold tracking-tight text-zinc-100 mb-2">
+                  {faq.q}
+                </h3>
+                <p className="text-xs text-zinc-500 leading-relaxed font-mono">
+                  {faq.a}
+                </p>
+              </div>
+            ))}
           </div>
 
-          {/* Student Discount Banner */}
+          {/* Academic Banner */}
           <motion.div
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true }}
             variants={fadeInUp}
-            className="mt-20 p-8 rounded-3xl bg-linear-to-r from-blue-600/20 to-purple-600/20 border border-blue-500/30 text-center"
+            className="mt-20 p-8 rounded-2xl bg-zinc-900/20 backdrop-blur-2xl border border-zinc-800/80 text-center"
           >
-            <h3 className="text-2xl font-bold text-white mb-4">
-              🎓 Student Discount Pack
+            <h3 className="text-xl font-semibold tracking-tight text-zinc-100 mb-4">
+              Academic Grant Program
             </h3>
-            <p className="text-gray-300 max-w-2xl mx-auto mb-6">
-              We believe in the power of students. Verify your status and get up
-              to 80% off on all paid plans to build your dreams.
+            <p className="text-zinc-400 text-xs font-mono max-w-2xl mx-auto mb-6 leading-relaxed">
+              We provide free Professional-tier access to students and academic researchers. Verify your institutional email address to claim your grant.
             </p>
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 rounded-full bg-blue-600 px-6 py-3 text-sm font-semibold text-white hover:bg-blue-500 transition-colors"
+              className="inline-flex h-10 items-center justify-center rounded border border-zinc-800 bg-zinc-900/50 px-6 text-xs font-semibold text-zinc-300 transition-all hover:bg-zinc-800 hover:text-zinc-100 gap-2"
             >
-              Claim Student Discount <ArrowRight className="h-4 w-4" />
+              Request Verification <ArrowRight className="h-3 w-3" />
             </Link>
           </motion.div>
         </section>
       </main>
 
-      <footer className="mt-20 border-t border-white/10 bg-[#020202] py-12 text-center text-sm text-gray-600">
+      <footer className="mt-20 border-t border-zinc-800/80 bg-[#09090b]/80 backdrop-blur-xl py-8 text-center text-[10px] font-mono text-zinc-600">
         <div className="max-w-[80vw] mx-auto px-6">
-          <p>© 2024 Zero Ops. Built for builders.</p>
+          <p>@zeroops-core // Enterprise Orchestration System</p>
         </div>
       </footer>
     </div>

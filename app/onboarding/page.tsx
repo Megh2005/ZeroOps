@@ -606,7 +606,7 @@ export default function OnboardingPage() {
 
   if (loading || !user) {
     return (
-      <div className="min-h-screen bg-[#09090b] flex flex-col items-center justify-center text-white relative">
+      <div className="min-h-screen bg-transparent flex flex-col items-center justify-center text-zinc-100 relative">
         <Loader2 className="w-6 h-6 animate-spin text-zinc-400 z-10" />
         <p className="text-zinc-500 font-mono text-[10px] mt-3 tracking-wider uppercase z-10">
           Syncing session context...
@@ -639,7 +639,7 @@ export default function OnboardingPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#09090b] text-white flex items-center justify-center p-4 md:p-8 lg:p-12 select-none relative overflow-hidden">
+    <div className="min-h-screen bg-transparent text-zinc-100 flex items-center justify-center p-4 md:p-8 lg:p-12 select-none relative overflow-hidden">
       {/* Muted Premium Grid overlay */}
       <div className="absolute inset-0 z-0 pointer-events-none opacity-40">
         <div className="absolute inset-0 bg-[linear-gradient(to_right,#141416_1px,transparent_1px),linear-gradient(to_bottom,#141416_1px,transparent_1px)] bg-[size:24px_24px]" />

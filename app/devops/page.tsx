@@ -11,6 +11,7 @@ import {
   CheckCircle2,
   Sparkles,
   ArrowRight,
+  Activity
 } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { motion, AnimatePresence } from "framer-motion";
@@ -19,9 +20,7 @@ import { MarkdownRenderer } from "@/components/markdown-renderer";
 import { toast } from "sonner";
 
 export default function DevOpsPage() {
-  const [activeTab, setActiveTab] = useState<"terraform" | "architecture">(
-    "terraform",
-  );
+  const [activeTab, setActiveTab] = useState<"terraform" | "architecture">("terraform");
   const [terraformCode, setTerraformCode] = useState("");
   const [terraformOutput, setTerraformOutput] = useState("");
   const [isDebugging, setIsDebugging] = useState(false);
@@ -37,10 +36,10 @@ export default function DevOpsPage() {
     const debugPromise = debugTerraform(terraformCode);
 
     toast.promise(debugPromise, {
-      loading: "Analyzing Terraform configuration...",
+      loading: "Running static analysis...",
       success: (result) => {
         setTerraformOutput(result);
-        return "Analysis complete!";
+        return "Analysis complete.";
       },
       error: (err) => {
         setTerraformOutput("An error occurred while debugging.");
@@ -62,14 +61,14 @@ export default function DevOpsPage() {
     const analyzePromise = getArchitecturalSuggestions(archDescription);
 
     toast.promise(analyzePromise, {
-      loading: "Generating architecture suggestions...",
+      loading: "Synthesizing architecture...",
       success: (result) => {
         setArchOutput(result);
-        return "Blueprint generated!";
+        return "Synthesis complete.";
       },
       error: (err) => {
         setArchOutput("An error occurred while analyzing.");
-        return "Generation failed.";
+        return "Synthesis failed.";
       },
     });
 
@@ -90,12 +89,11 @@ export default function DevOpsPage() {
     const contentWidth = pageWidth - margin * 2;
     let y = 35;
 
-    // Theme color based on title
-    const isArch = title.toLowerCase().includes("architecture");
-    const themeColor = isArch ? [147, 51, 234] : [37, 99, 235]; // Purple vs Blue
+    // Theme color based on title (always slate/zinc in new theme)
+    const themeColor = [161, 161, 170]; // Zinc 400
 
     // Background
-    doc.setFillColor(5, 5, 5);
+    doc.setFillColor(9, 9, 11);
     doc.rect(0, 0, 210, 297, "F");
 
     // Header Branding
@@ -105,13 +103,13 @@ export default function DevOpsPage() {
     doc.setTextColor(255, 255, 255);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(22);
-    doc.text("ZeroOps", margin + 5, 23);
+    doc.text("ZEROOPS CORE", margin + 5, 23);
 
     doc.setFontSize(9);
     doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
-    doc.text("CLOUD INFRASTRUCTURE ANALYSIS", margin + 5, 28);
+    doc.text("ENTERPRISE INFRASTRUCTURE REPORT", margin + 5, 28);
 
-    doc.setDrawColor(30, 30, 30);
+    doc.setDrawColor(39, 39, 42); // zinc 800
     doc.line(margin, 35, pageWidth - margin, 35);
 
     // Document Title
@@ -123,7 +121,7 @@ export default function DevOpsPage() {
     // Initial Font
     doc.setFont("helvetica", "normal");
     doc.setFontSize(10);
-    doc.setTextColor(180, 180, 180);
+    doc.setTextColor(212, 212, 216); // zinc 300
 
     const cleanContent = content.replace(
       /```[\s\S]*?```/g,
@@ -134,7 +132,7 @@ export default function DevOpsPage() {
     const checkPage = (height: number) => {
       if (y + height > 275) {
         doc.addPage();
-        doc.setFillColor(5, 5, 5);
+        doc.setFillColor(9, 9, 11);
         doc.rect(0, 0, 210, 297, "F");
         y = 25;
         return true;
@@ -158,7 +156,7 @@ export default function DevOpsPage() {
         y += 8;
         doc.setFontSize(10);
         doc.setFont("helvetica", "normal");
-        doc.setTextColor(200, 200, 200);
+        doc.setTextColor(212, 212, 216);
       } else if (line.startsWith("### ")) {
         checkPage(12);
         doc.setFontSize(11);
@@ -168,7 +166,7 @@ export default function DevOpsPage() {
         y += 7;
         doc.setFontSize(10);
         doc.setFont("helvetica", "normal");
-        doc.setTextColor(180, 180, 180);
+        doc.setTextColor(212, 212, 216);
       } else if (line.trim().startsWith("- ") || line.trim().startsWith("* ")) {
         const itemText = "• " + line.trim().substring(2);
         const splitItem = doc.splitTextToSize(itemText, contentWidth - 8);
@@ -177,20 +175,20 @@ export default function DevOpsPage() {
         y += splitItem.length * 5.5;
       } else if (line.trim().startsWith("---")) {
         checkPage(10);
-        doc.setDrawColor(40, 40, 40);
+        doc.setDrawColor(39, 39, 42);
         doc.line(margin, y, pageWidth - margin, y);
         y += 8;
       } else if (line.includes("[CODE BLOCK")) {
         checkPage(10);
-        doc.setFillColor(20, 20, 20);
-        doc.setDrawColor(themeColor[0], themeColor[1], themeColor[2]);
+        doc.setFillColor(24, 24, 27); // zinc 900
+        doc.setDrawColor(63, 63, 70); // zinc 700
         doc.rect(margin, y - 4, contentWidth, 8, "FD");
         doc.setFontSize(8);
         doc.setTextColor(themeColor[0], themeColor[1], themeColor[2]);
         doc.text(line.trim(), margin + 5, y + 1);
         y += 10;
         doc.setFontSize(10);
-        doc.setTextColor(180, 180, 180);
+        doc.setTextColor(212, 212, 216);
       } else {
         let text = line.replace(/\*\*(.*?)\*\*/g, "$1");
         const splitText = doc.splitTextToSize(text, contentWidth);
@@ -204,9 +202,9 @@ export default function DevOpsPage() {
     for (let i = 1; i <= totalPages; i++) {
       doc.setPage(i);
       doc.setFontSize(8);
-      doc.setTextColor(80, 80, 80);
+      doc.setTextColor(113, 113, 122); // zinc 500
       doc.text(
-        `ZEROOPS INFRASTRUCTURE REPORT • PAGE ${i} OF ${totalPages}`,
+        `ZEROOPS CORE • PAGE ${i} OF ${totalPages}`,
         pageWidth / 2,
         285,
         { align: "center" },
@@ -217,81 +215,73 @@ export default function DevOpsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white selection:bg-blue-500/30 ">
-      {/* Background Effects */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] h-[500px] w-[500px] rounded-full bg-purple-600/10 blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] h-[500px] w-[500px] rounded-full bg-blue-600/10 blur-[120px]" />
-        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center mask-[linear-gradient(180deg,white,rgba(255,255,255,0))]" />
-      </div>
-
+    <div className="min-h-screen bg-transparent text-zinc-100 selection:bg-zinc-500/30">
       <SiteHeader />
 
       <main className="relative z-10 pt-32 pb-20 w-[80vw] mx-auto px-0">
-        <div className="flex flex-col items-center text-center space-y-4 mb-16">
+        <div className="flex flex-col items-center text-center space-y-4 mb-16 mt-10">
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs font-medium text-blue-300 mb-6">
-              <Sparkles className="h-3 w-3 text-blue-400" />
-              <span>Powered by Gemini 2.0</span>
+            <div className="mb-6 inline-flex items-center gap-2 rounded border border-zinc-800 bg-zinc-900/30 px-3 py-1 text-[10px] font-mono tracking-widest uppercase text-zinc-400 shadow-sm mx-auto">
+              <Activity className="h-3 w-3 text-blue-500" />
+              <span>System Intelligence Core</span>
             </div>
-            <h1 className="text-4xl font-bold  md:text-6xl mb-6">
+            <h1 className="text-4xl font-semibold tracking-tight md:text-6xl mb-6 text-zinc-100">
               Cloud Infrastructure <br />
-              <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-purple-400">
-                Assistant
+              <span className="text-zinc-500">
+                Analysis Engine
               </span>
             </h1>
-            <p className="text-lg text-gray-400 max-w-2xl mx-auto leading-relaxed">
-              Debug configurations and design scalable architectures with an AI
-              trained specifically for Google Cloud Platform.
+            <p className="text-xs font-mono text-zinc-400 max-w-2xl mx-auto leading-relaxed">
+              Debug configurations and orchestrate scalable topologies utilizing our advanced cognitive engine, trained exclusively on enterprise infrastructure paradigms.
             </p>
           </motion.div>
         </div>
 
         {/* Custom Tab Switcher */}
         <div className="flex justify-center mb-12">
-          <div className="flex p-1 bg-white/5 backdrop-blur-3xl border border-white/10 rounded-full">
+          <div className="flex p-1 bg-zinc-900/40 backdrop-blur-3xl border border-zinc-800/80 rounded">
             <button
               onClick={() => setActiveTab("terraform")}
               className={cn(
-                "relative px-8 py-3 rounded-full text-sm font-medium transition-all duration-300",
+                "relative px-8 py-2 rounded text-xs font-semibold transition-all duration-300",
                 activeTab === "terraform"
-                  ? "text-white"
-                  : "text-gray-400 hover:text-white",
+                  ? "text-zinc-900"
+                  : "text-zinc-400 hover:text-zinc-300",
               )}
             >
               {activeTab === "terraform" && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute inset-0 bg-blue-600 rounded-full shadow-[0_0_20px_rgba(37,99,235,0.3)]"
+                  className="absolute inset-0 bg-zinc-100 rounded"
                   transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                 />
               )}
               <span className="relative z-10 flex items-center gap-2">
-                <Terminal className="w-4 h-4" /> Terraform Debugger
+                <Terminal className="w-4 h-4" /> State Inspector
               </span>
             </button>
             <button
               onClick={() => setActiveTab("architecture")}
               className={cn(
-                "relative px-8 py-3 rounded-full text-sm font-medium transition-all duration-300",
+                "relative px-8 py-2 rounded text-xs font-semibold transition-all duration-300",
                 activeTab === "architecture"
-                  ? "text-white"
-                  : "text-gray-400 hover:text-white",
+                  ? "text-zinc-900"
+                  : "text-zinc-400 hover:text-zinc-300",
               )}
             >
               {activeTab === "architecture" && (
                 <motion.div
                   layoutId="activeTab"
-                  className="absolute inset-0 bg-purple-600 rounded-full shadow-[0_0_20px_rgba(147,51,234,0.3)]"
+                  className="absolute inset-0 bg-zinc-100 rounded"
                   transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                 />
               )}
               <span className="relative z-10 flex items-center gap-2">
-                <Cloud className="w-4 h-4" /> Architecture Advisor
+                <Cloud className="w-4 h-4" /> Topology Architect
               </span>
             </button>
           </div>
@@ -301,30 +291,29 @@ export default function DevOpsPage() {
           {activeTab === "terraform" ? (
             <motion.div
               key="terraform"
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
+              exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.4 }}
               className="w-full"
             >
-              <div className="rounded-3xl border border-white/10 bg-[#0A0A0A]/80 backdrop-blur-xl p-1 shadow-2xl overflow-hidden">
+              <div className="rounded-2xl border border-zinc-800/80 bg-zinc-900/10 backdrop-blur-2xl p-1 shadow-2xl overflow-hidden">
                 <div className="p-6 md:p-8 space-y-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="text-xl font-semibold text-white">
-                        Debugger
+                      <h3 className="text-xl font-semibold tracking-tight text-zinc-100">
+                        HCL Debug Interface
                       </h3>
-                      <p className="text-sm text-gray-400 mt-1">
-                        Paste your main.tf content below
+                      <p className="text-xs font-mono text-zinc-500 mt-1">
+                        Input configuration state for static analysis
                       </p>
                     </div>
                   </div>
 
                   <div className="relative group">
-                    <div className="absolute -inset-0.5 bg-linear-to-br from-blue-500/20 to-purple-500/20 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-500" />
                     <Textarea
-                      placeholder='resource "google_compute_instance" "default" { ... }'
-                      className="relative min-h-[400px] font-mono text-sm bg-black/50 border-white/10 text-gray-300 focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/20 resize-none p-6 rounded-xl"
+                      placeholder='resource "aws_instance" "app" { ... }'
+                      className="relative min-h-[400px] font-mono text-sm bg-zinc-950/50 border-zinc-800 text-zinc-300 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500/20 resize-none p-6 rounded"
                       value={terraformCode}
                       onChange={(e) => setTerraformCode(e.target.value)}
                     />
@@ -339,7 +328,7 @@ export default function DevOpsPage() {
   public_access_prevention = "enforced"
 }`)
                         }
-                        className="shrink-0 text-xs bg-white/5 hover:bg-white/10 border border-white/5 text-gray-400 hover:text-white px-3 py-1.5 rounded-full transition-colors backdrop-blur-md"
+                        className="shrink-0 text-[10px] font-mono uppercase tracking-widest bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-zinc-200 px-3 py-1.5 rounded transition-colors backdrop-blur-md"
                       >
                         Bucket Lifecycle
                       </button>
@@ -352,7 +341,7 @@ export default function DevOpsPage() {
   source_ranges = ["0.0.0.0/0"]
 }`)
                         }
-                        className="shrink-0 text-xs bg-white/5 hover:bg-white/10 border border-white/5 text-gray-400 hover:text-white px-3 py-1.5 rounded-full transition-colors backdrop-blur-md"
+                        className="shrink-0 text-[10px] font-mono uppercase tracking-widest bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-zinc-200 px-3 py-1.5 rounded transition-colors backdrop-blur-md"
                       >
                         Firewall Risk
                       </button>
@@ -369,37 +358,9 @@ export default function DevOpsPage() {
   }
 }`)
                         }
-                        className="shrink-0 text-xs bg-white/5 hover:bg-white/10 border border-white/5 text-gray-400 hover:text-white px-3 py-1.5 rounded-full transition-colors backdrop-blur-md"
+                        className="shrink-0 text-[10px] font-mono uppercase tracking-widest bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-zinc-200 px-3 py-1.5 rounded transition-colors backdrop-blur-md"
                       >
                         Public SQL
-                      </button>
-                      <button
-                        onClick={() =>
-                          setTerraformCode(`resource "google_project_iam_member" "user" {
-  project = "my-project"
-  role    = "roles/owner" // Security risk: Overly permissive
-  member  = "user:jane@example.com"
-}`)
-                        }
-                        className="shrink-0 text-xs bg-white/5 hover:bg-white/10 border border-white/5 text-gray-400 hover:text-white px-3 py-1.5 rounded-full transition-colors backdrop-blur-md"
-                      >
-                        IAM Permissive
-                      </button>
-                      <button
-                        onClick={() =>
-                          setTerraformCode(`resource "google_container_cluster" "primary" {
-  name     = "my-gke-cluster"
-  location = "us-central1"
-  master_auth {
-    client_certificate_config {
-      issue_client_certificate = true // Legacy auth method
-    }
-  }
-}`)
-                        }
-                        className="shrink-0 text-xs bg-white/5 hover:bg-white/10 border border-white/5 text-gray-400 hover:text-white px-3 py-1.5 rounded-full transition-colors backdrop-blur-md"
-                      >
-                        GKE Legacy Auth
                       </button>
                     </div>
                   </div>
@@ -408,7 +369,7 @@ export default function DevOpsPage() {
                     <Button
                       onClick={handleDebug}
                       disabled={isDebugging || !terraformCode.trim()}
-                      className="h-12 px-8 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-medium transition-all hover:shadow-[0_0_20px_rgba(37,99,235,0.3)]"
+                      className="h-10 px-8 rounded bg-zinc-100 hover:bg-white text-zinc-900 font-semibold transition-all text-xs"
                     >
                       {isDebugging ? (
                         <>
@@ -417,7 +378,7 @@ export default function DevOpsPage() {
                         </>
                       ) : (
                         <>
-                          Debug Configuration{" "}
+                          Execute Analysis{" "}
                           <ArrowRight className="ml-2 h-4 w-4" />
                         </>
                       )}
@@ -429,12 +390,12 @@ export default function DevOpsPage() {
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
-                    className="border-t border-white/10 bg-white/2"
+                    className="border-t border-zinc-800/80 bg-zinc-900/30"
                   >
                     <div className="p-6 md:p-8">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-2 text-green-400 font-medium">
-                          <CheckCircle2 className="w-5 h-5" /> Analysis Complete
+                      <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center gap-2 text-emerald-500 text-sm font-semibold tracking-tight">
+                          <CheckCircle2 className="w-5 h-5" /> Synthesis Complete
                         </div>
                         <Button
                           onClick={() =>
@@ -445,13 +406,13 @@ export default function DevOpsPage() {
                           }
                           variant="ghost"
                           size="sm"
-                          className="text-gray-400 hover:bg-white/10 hover:text-white"
+                          className="text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100 text-xs font-mono"
                         >
-                          <ArrowRight className="w-4 h-4 mr-2 rotate-45" />{" "}
-                          Download PDF Report
+                          <ArrowRight className="w-3 h-3 mr-2 rotate-45" />{" "}
+                          Export Report
                         </Button>
                       </div>
-                      <div>
+                      <div className="text-zinc-300 text-sm font-mono leading-relaxed">
                         <MarkdownRenderer content={terraformOutput} />
                       </div>
                     </div>
@@ -462,30 +423,29 @@ export default function DevOpsPage() {
           ) : (
             <motion.div
               key="architecture"
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -20 }}
+              exit={{ opacity: 0, y: -15 }}
               transition={{ duration: 0.4 }}
               className="w-full"
             >
-              <div className="rounded-3xl border border-white/10 bg-[#0A0A0A]/80 backdrop-blur-xl p-1 shadow-2xl overflow-hidden">
+              <div className="rounded-2xl border border-zinc-800/80 bg-zinc-900/10 backdrop-blur-2xl p-1 shadow-2xl overflow-hidden">
                 <div className="p-6 md:p-8 space-y-6">
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="text-xl font-semibold text-white">
-                        Architect
+                      <h3 className="text-xl font-semibold tracking-tight text-zinc-100">
+                        Topology Synthesizer
                       </h3>
-                      <p className="text-sm text-gray-400 mt-1">
-                        Describe your system requirements
+                      <p className="text-xs font-mono text-zinc-500 mt-1">
+                        Input scale and connectivity parameters
                       </p>
                     </div>
                   </div>
 
                   <div className="relative group">
-                    <div className="absolute -inset-0.5 bg-linear-to-br from-purple-500/20 to-pink-500/20 rounded-xl blur opacity-0 group-hover:opacity-100 transition duration-500" />
                     <Textarea
-                      placeholder="e.g., I need a highly available microservices architecture on GKE with Cloud SQL and Redis..."
-                      className="relative min-h-[200px] text-base bg-black/50 border-white/10 text-gray-300 focus:border-purple-500/50 focus:ring-1 focus:ring-purple-500/20 resize-none p-6 rounded-xl"
+                      placeholder="e.g., Target: Highly available microservices orchestration on Kubernetes with managed relational stores..."
+                      className="relative min-h-[200px] text-sm font-mono bg-zinc-950/50 border-zinc-800 text-zinc-300 focus:border-zinc-500 focus:ring-1 focus:ring-zinc-500/20 resize-none p-6 rounded"
                       value={archDescription}
                       onChange={(e) => setArchDescription(e.target.value)}
                     />
@@ -497,7 +457,7 @@ export default function DevOpsPage() {
                             "Design a serverless event-driven architecture using Cloud Run, Pub/Sub, and Eventarc to process images uploaded to Cloud Storage.",
                           )
                         }
-                        className="shrink-0 text-xs bg-white/5 hover:bg-white/10 border border-white/5 text-gray-400 hover:text-white px-3 py-1.5 rounded-full transition-colors backdrop-blur-md"
+                        className="shrink-0 text-[10px] font-mono uppercase tracking-widest bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-zinc-200 px-3 py-1.5 rounded transition-colors backdrop-blur-md"
                       >
                         Serverless Pipeline
                       </button>
@@ -507,9 +467,9 @@ export default function DevOpsPage() {
                             "I need a globally distributed, high-availability web application architecture using Cloud Spanner and Global Load Balancing.",
                           )
                         }
-                        className="shrink-0 text-xs bg-white/5 hover:bg-white/10 border border-white/5 text-gray-400 hover:text-white px-3 py-1.5 rounded-full transition-colors backdrop-blur-md"
+                        className="shrink-0 text-[10px] font-mono uppercase tracking-widest bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-zinc-200 px-3 py-1.5 rounded transition-colors backdrop-blur-md"
                       >
-                        Global HA App
+                        Global HA Core
                       </button>
                       <button
                         onClick={() =>
@@ -517,29 +477,9 @@ export default function DevOpsPage() {
                             "Design a scalable data lake and analytics platform using Cloud Storage, BigQuery, and Dataflow for real-time processing.",
                           )
                         }
-                        className="shrink-0 text-xs bg-white/5 hover:bg-white/10 border border-white/5 text-gray-400 hover:text-white px-3 py-1.5 rounded-full transition-colors backdrop-blur-md"
+                        className="shrink-0 text-[10px] font-mono uppercase tracking-widest bg-zinc-900 hover:bg-zinc-800 border border-zinc-800 text-zinc-400 hover:text-zinc-200 px-3 py-1.5 rounded transition-colors backdrop-blur-md"
                       >
                         Data Analytics
-                      </button>
-                      <button
-                        onClick={() =>
-                          setArchDescription(
-                            "I need a secure CI/CD pipeline using Cloud Build and Artifact Registry that deploys to Cloud Run with Binary Authorization.",
-                          )
-                        }
-                        className="shrink-0 text-xs bg-white/5 hover:bg-white/10 border border-white/5 text-gray-400 hover:text-white px-3 py-1.5 rounded-full transition-colors backdrop-blur-md"
-                      >
-                        Secure CI/CD
-                      </button>
-                      <button
-                        onClick={() =>
-                          setArchDescription(
-                            "Best way to connect an on-premise data center to a VPC using Cloud VPN or Interconnect with high availability.",
-                          )
-                        }
-                        className="shrink-0 text-xs bg-white/5 hover:bg-white/10 border border-white/5 text-gray-400 hover:text-white px-3 py-1.5 rounded-full transition-colors backdrop-blur-md"
-                      >
-                        Hybrid Network
                       </button>
                     </div>
                   </div>
@@ -548,16 +488,16 @@ export default function DevOpsPage() {
                     <Button
                       onClick={handleAnalyze}
                       disabled={isAnalyzing || !archDescription.trim()}
-                      className="h-12 px-8 rounded-full bg-purple-600 hover:bg-purple-500 text-white font-medium transition-all hover:shadow-[0_0_20px_rgba(147,51,234,0.3)]"
+                      className="h-10 px-8 rounded bg-zinc-100 hover:bg-white text-zinc-900 font-semibold transition-all text-xs"
                     >
                       {isAnalyzing ? (
                         <>
                           <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                          Generating Blueprint...
+                          Synthesizing...
                         </>
                       ) : (
                         <>
-                          Generate Architecture{" "}
+                          Generate Blueprint{" "}
                           <ArrowRight className="ml-2 h-4 w-4" />
                         </>
                       )}
@@ -569,11 +509,11 @@ export default function DevOpsPage() {
                   <motion.div
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: "auto" }}
-                    className="border-t border-white/10 bg-white/2"
+                    className="border-t border-zinc-800/80 bg-zinc-900/30"
                   >
                     <div className="p-6 md:p-8">
-                      <div className="flex items-center justify-between mb-4">
-                        <div className="flex items-center gap-2 text-purple-400 font-medium">
+                      <div className="flex items-center justify-between mb-6">
+                        <div className="flex items-center gap-2 text-emerald-500 text-sm font-semibold tracking-tight">
                           <Sparkles className="w-5 h-5" /> Recommendation
                         </div>
                         <Button
@@ -585,13 +525,13 @@ export default function DevOpsPage() {
                           }
                           variant="ghost"
                           size="sm"
-                          className="text-gray-400 hover:bg-white/10 hover:text-white"
+                          className="text-zinc-400 hover:bg-zinc-800 hover:text-zinc-100 text-xs font-mono"
                         >
-                          <ArrowRight className="w-4 h-4 mr-2 rotate-45" />{" "}
-                          Download PDF Report
+                          <ArrowRight className="w-3 h-3 mr-2 rotate-45" />{" "}
+                          Export Report
                         </Button>
                       </div>
-                      <div>
+                      <div className="text-zinc-300 text-sm font-mono leading-relaxed">
                         <MarkdownRenderer content={archOutput} />
                       </div>
                     </div>

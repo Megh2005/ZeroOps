@@ -15,11 +15,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { Github, Send } from "lucide-react";
+import { Github, Send, CheckCircle2 } from "lucide-react";
 
 const fadeInUp = {
-  hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 1 } },
+  hidden: { opacity: 0, y: 15 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
 export function ContactForm() {
@@ -30,7 +30,6 @@ export function ContactForm() {
       toast.success("Message sent successfully! We'll get back to you soon.");
     }
     if (state.errors) {
-      // Using generic check to avoid lint issues with Formspree's SubmissionError type
       toast.error("Submission failed. Please check all fields and try again.");
       console.error("Formspree Error:", state.errors);
     }
@@ -42,21 +41,25 @@ export function ContactForm() {
         initial="hidden"
         animate="visible"
         variants={fadeInUp}
-        className="text-center p-8 bg-[#111] rounded-3xl border border-blue-500/20 shadow-2xl"
+        className="text-center p-8 bg-zinc-900/10 backdrop-blur-2xl rounded-2xl border border-zinc-800/80 shadow-2xl"
       >
-        <h3 className="text-2xl font-bold text-white mb-4">
-          Thanks for reaching out!
+        <div className="mb-6 flex justify-center">
+          <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-emerald-500/10 text-emerald-500 border border-emerald-500/20">
+            <CheckCircle2 className="w-6 h-6" />
+          </div>
+        </div>
+        <h3 className="text-xl font-semibold tracking-tight text-zinc-100 mb-4">
+          Transmission Received
         </h3>
-        <p className="text-gray-400">
-          Your message has been received. Our team of developers will review it
-          and get back to you.
+        <p className="text-zinc-400 text-xs font-mono leading-relaxed max-w-md mx-auto">
+          Your support ticket has been registered in our system. A senior engineer will review the parameters and respond shortly.
         </p>
         <Button
           variant="outline"
-          className="mt-6 border-blue-500/30 bg-blue-950 text-blue-200 hover:bg-blue-500/10"
+          className="mt-8 border-zinc-800 bg-zinc-950 text-zinc-300 hover:bg-zinc-900 hover:text-zinc-100 rounded text-xs"
           onClick={() => window.location.reload()}
         >
-          Send another message
+          Initialize New Request
         </Button>
       </motion.div>
     );
@@ -67,7 +70,7 @@ export function ContactForm() {
       initial="hidden"
       animate="visible"
       variants={fadeInUp}
-      className="max-w-2xl mx-auto bg-[#0D0D0D]/50 backdrop-blur-xl p-8 rounded-3xl border border-white/10 shadow-2xl"
+      className="max-w-2xl mx-auto bg-zinc-900/20 backdrop-blur-2xl p-8 rounded-2xl border border-zinc-800/80 shadow-2xl"
     >
       <form
         onSubmit={handleSubmit}
@@ -76,77 +79,75 @@ export function ContactForm() {
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="full-name" className="text-gray-300">
+            <Label htmlFor="full-name" className="text-xs text-zinc-400">
               Full Name
             </Label>
             <Input
               id="full-name"
               name="name"
-              placeholder="John Doe"
+              placeholder="System Administrator"
               required
-              className="bg-white/5 border-white/10 focus:border-blue-500/50"
+              className="bg-zinc-900/50 border-zinc-800 focus:border-zinc-500 text-zinc-300 text-sm h-10 rounded shadow-inner"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="email" className="text-gray-300">
+            <Label htmlFor="email" className="text-xs text-zinc-400">
               Email Address
             </Label>
             <Input
               id="email"
               type="email"
               name="email"
-              placeholder="john@example.com"
+              placeholder="admin@enterprise.com"
               required
-              className="bg-white/5 border-white/10 focus:border-blue-500/50"
+              className="bg-zinc-900/50 border-zinc-800 focus:border-zinc-500 text-zinc-300 text-sm h-10 rounded shadow-inner"
             />
             <ValidationError
               prefix="Email"
               field="email"
               errors={state.errors}
-              className="text-red-500 text-xs mt-1"
+              className="text-red-500 text-[10px] font-mono mt-1"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="project-type" className="text-gray-300">
+            <Label htmlFor="project-type" className="text-xs text-zinc-400">
               Project Type
             </Label>
             <Select name="project-type" required>
-              <SelectTrigger className="bg-white/5 border-white/10 focus:border-blue-500/50 w-full">
-                <SelectValue placeholder="Select interest" />
+              <SelectTrigger className="bg-zinc-900/50 border-zinc-800 focus:border-zinc-500 text-zinc-300 text-sm h-10 rounded shadow-inner w-full">
+                <SelectValue placeholder="Select topology class" />
               </SelectTrigger>
-              <SelectContent className="bg-[#0D0D0D] border-white/10 text-white">
-                <SelectItem value="infrastructure">
-                  Cloud Infrastructure
-                </SelectItem>
-                <SelectItem value="devops">DevOps Automation</SelectItem>
-                <SelectItem value="security">Cloud Security</SelectItem>
-                <SelectItem value="enterprise">Enterprise Solution</SelectItem>
-                <SelectItem value="other">Other</SelectItem>
+              <SelectContent className="bg-zinc-950 border-zinc-800 text-zinc-300">
+                <SelectItem value="infrastructure" className="focus:bg-zinc-900">Cloud Infrastructure</SelectItem>
+                <SelectItem value="devops" className="focus:bg-zinc-900">DevOps Automation</SelectItem>
+                <SelectItem value="security" className="focus:bg-zinc-900">Cloud Security</SelectItem>
+                <SelectItem value="enterprise" className="focus:bg-zinc-900">Enterprise Solution</SelectItem>
+                <SelectItem value="other" className="focus:bg-zinc-900">Other</SelectItem>
               </SelectContent>
             </Select>
           </div>
           <div className="space-y-2">
             <Label
               htmlFor="github"
-              className="text-gray-300 flex items-center gap-2"
+              className="text-xs text-zinc-400 flex items-center gap-2"
             >
-              <Github className="w-4 h-4" /> Github URL
+              <Github className="w-3 h-3" /> Repository URL
             </Label>
             <Input
               id="github"
               name="github"
-              placeholder="https://github.com/username"
-              className="bg-white/5 border-white/10 focus:border-blue-500/50"
+              placeholder="https://github.com/organization"
+              className="bg-zinc-900/50 border-zinc-800 focus:border-zinc-500 text-zinc-300 text-sm h-10 rounded shadow-inner"
             />
           </div>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
-            <Label htmlFor="callback-date" className="text-gray-300">
+            <Label htmlFor="callback-date" className="text-xs text-zinc-400">
               Suggested Callback Date
             </Label>
             <Input
@@ -155,7 +156,7 @@ export function ContactForm() {
               name="callback-date"
               required
               min={new Date(Date.now() + 86400000).toISOString().split("T")[0]}
-              className="bg-white/5 border-white/10 focus:border-blue-500/50 scheme-dark"
+              className="bg-zinc-900/50 border-zinc-800 focus:border-zinc-500 text-zinc-300 text-sm h-10 rounded shadow-inner [color-scheme:dark]"
               onChange={(e) => {
                 const date = new Date(e.target.value);
                 const day = date.getUTCDay();
@@ -169,7 +170,7 @@ export function ContactForm() {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="callback-time" className="text-gray-300">
+            <Label htmlFor="callback-time" className="text-xs text-zinc-400">
               Suggested Callback Time (9 AM - 9 PM)
             </Label>
             <Input
@@ -179,7 +180,7 @@ export function ContactForm() {
               required
               min="09:00"
               max="21:00"
-              className="bg-white/5 border-white/10 focus:border-blue-500/50 scheme-dark"
+              className="bg-zinc-900/50 border-zinc-800 focus:border-zinc-500 text-zinc-300 text-sm h-10 rounded shadow-inner [color-scheme:dark]"
               onChange={(e) => {
                 const time = e.target.value;
                 if (time < "09:00" || time > "21:00") {
@@ -194,37 +195,37 @@ export function ContactForm() {
         </div>
 
         <div className="space-y-2">
-          <Label htmlFor="message" className="text-gray-300">
-            Technical Brief / Message
+          <Label htmlFor="message" className="text-xs text-zinc-400">
+            Technical Brief / Parameters
           </Label>
           <Textarea
             id="message"
             name="message"
-            placeholder="Tell us about your infrastructure goals..."
+            placeholder="Specify your architectural requirements and scale..."
             required
-            className="bg-white/5 border-white/10 focus:border-blue-500/50 min-h-[150px]"
+            className="bg-zinc-900/50 border-zinc-800 focus:border-zinc-500 text-zinc-300 text-sm min-h-[150px] rounded shadow-inner resize-y"
           />
           <ValidationError
             prefix="Message"
             field="message"
             errors={state.errors}
-            className="text-red-500 text-xs mt-1"
+            className="text-red-500 text-[10px] font-mono mt-1"
           />
         </div>
 
         <Button
           type="submit"
           disabled={state.submitting}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white h-12 rounded-xl transition-all flex items-center justify-center gap-2 font-bold"
+          className="w-full bg-zinc-100 hover:bg-white text-zinc-900 h-10 rounded text-xs font-semibold transition-all flex items-center justify-center gap-2"
         >
           {state.submitting ? (
             <span className="flex items-center gap-2">
-              <div className="h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
-              Sending...
+              <div className="h-3 w-3 animate-spin rounded-full border-2 border-zinc-900 border-t-transparent" />
+              Transmitting...
             </span>
           ) : (
             <>
-              <Send className="w-4 h-4" /> Send Message
+              <Send className="w-3 h-3" /> Submit Requirements
             </>
           )}
         </Button>

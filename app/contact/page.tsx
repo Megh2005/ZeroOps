@@ -7,44 +7,37 @@ import { SiteHeader } from "@/components/site-header";
 import { ContactForm } from "@/components/contact-form";
 
 const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  hidden: { opacity: 0, y: 15 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.5 } },
 };
 
 export default function ContactPage() {
   return (
-    <div className="min-h-screen bg-[#050505] text-white selection:bg-blue-500/30">
-      {/* Background Effects */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-20%] left-[-10%] h-[800px] w-[800px] rounded-full bg-purple-900/10 blur-[120px]" />
-        <div className="absolute bottom-[-20%] right-[-10%] h-[800px] w-[800px] rounded-full bg-blue-900/10 blur-[120px]" />
-        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
-      </div>
-
+    <div className="min-h-screen bg-transparent text-zinc-100 selection:bg-blue-500/30">
       <SiteHeader />
 
       <main className="relative z-10 pt-32 pb-20">
         {/* Hero Section */}
-        <section className="max-w-[80vw] mx-auto px-6 text-center mb-16">
+        <section className="max-w-[80vw] mx-auto px-6 text-center mb-16 mt-10">
           <motion.div
             initial="hidden"
             animate="visible"
             variants={fadeInUp}
             className="mx-auto max-w-4xl"
           >
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-1.5 text-sm font-medium text-blue-400">
-              <Sparkles className="h-4 w-4" />
-              Build the Future Together
+            <div className="mb-6 inline-flex items-center gap-2 rounded border border-zinc-800 bg-zinc-900/30 px-3 py-1 text-[10px] font-mono tracking-widest uppercase text-zinc-400 shadow-sm mx-auto">
+              <Mail className="h-3 w-3 text-blue-500" />
+              Enterprise Support
             </div>
-            <h1 className="mb-8 text-5xl font-bold md:text-7xl">
-              Get in{" "}
-              <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-purple-500">
-                Touch
+            <h1 className="mb-8 text-4xl font-semibold tracking-tight md:text-6xl text-zinc-100">
+              Engage with{" "}
+              <span className="text-zinc-500">
+                Architecture
               </span>
             </h1>
-            <p className="mx-auto max-w-2xl text-xl text-gray-400 leading-relaxed">
-              Have a technical question or an enterprise requirement? Our team
-              of cloud architects is ready to help you scale.
+            <p className="mx-auto max-w-2xl text-sm font-mono text-zinc-400 leading-relaxed">
+              Have a technical inquiry or complex enterprise requirement? Our core team
+              of cloud orchestration engineers is prepared to assist you.
             </p>
           </motion.div>
         </section>
@@ -57,12 +50,6 @@ export default function ContactPage() {
           </div>
         </section>
       </main>
-
-      <footer className="mt-20 border-t border-white/10 bg-[#020202] py-12 text-center text-sm text-gray-600">
-        <div className="max-w-[80vw] mx-auto px-6">
-          <p>© 2024 Zero Ops. Built for builders.</p>
-        </div>
-      </footer>
     </div>
   );
 }

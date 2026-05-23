@@ -217,7 +217,7 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#09090b] flex flex-col items-center justify-center text-white relative">
+      <div className="min-h-screen bg-transparent flex flex-col items-center justify-center text-zinc-100 relative">
         <Loader2 className="w-6 h-6 animate-spin text-zinc-400" />
         <p className="text-zinc-500 font-mono text-[10px] mt-3 tracking-wider uppercase">
           Syncing dashboard workspace...
@@ -255,7 +255,7 @@ export default function DashboardPage() {
   } as const;
 
   return (
-    <div className="min-h-screen bg-[#09090b] text-white select-none relative overflow-hidden">
+    <div className="min-h-screen bg-transparent text-zinc-100 select-none relative overflow-hidden">
       <SiteHeader />
 
       {/* Muted Premium Grid Canvas */}

@@ -6,27 +6,19 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import {
   Send,
-  Bot,
-  User as UserIcon,
   Loader2,
   Trash2,
-  Sparkles,
-  MessageSquare,
-  ChevronRight,
-  Terminal,
-  Cloud,
-  Layers,
-  ShieldCheck,
   FileDown,
-  BrainCircuit,
+  Terminal,
+  Activity,
+  Workflow,
   Cpu,
   Network,
   Binary,
-  Activity,
   Globe,
+  ShieldCheck,
   Database,
-  Workflow,
-  Unplug,
+  TerminalSquare
 } from "lucide-react";
 import { SiteHeader } from "@/components/site-header";
 import { motion, AnimatePresence } from "framer-motion";
@@ -41,38 +33,14 @@ interface Message {
 }
 
 const PRESET_QUESTIONS = [
-  {
-    icon: <Workflow className="w-5 h-5 text-blue-400" />,
-    question: "Explain CI/CD in GCP using layman terms.",
-  },
-  {
-    icon: <Cpu className="w-5 h-5 text-purple-400" />,
-    question: "What is Terraform and why use it for GCP?",
-  },
-  {
-    icon: <Network className="w-5 h-5 text-green-400" />,
-    question: "How does Least Privilege work in GCP IAM?",
-  },
-  {
-    icon: <Binary className="w-5 h-5 text-orange-400" />,
-    question: "Explain Kubernetes (GKE) like I'm five.",
-  },
-  {
-    icon: <Activity className="w-5 h-5 text-yellow-400" />,
-    question: "What is the benefit of Cloud Run over VMs?",
-  },
-  {
-    icon: <Globe className="w-5 h-5 text-pink-400" />,
-    question: "How does Artifact Registry help DevOps?",
-  },
-  {
-    icon: <ShieldCheck className="w-5 h-5 text-cyan-400" />,
-    question: "What is Project vs Organization in GCP?",
-  },
-  {
-    icon: <Database className="w-5 h-5 text-red-400" />,
-    question: "How does a Load Balancer work in GCP?",
-  },
+  { icon: <Workflow className="w-4 h-4 text-zinc-500" />, question: "Explain CI/CD in GCP using layman terms." },
+  { icon: <Cpu className="w-4 h-4 text-zinc-500" />, question: "What is Terraform and why use it for GCP?" },
+  { icon: <Network className="w-4 h-4 text-zinc-500" />, question: "How does Least Privilege work in GCP IAM?" },
+  { icon: <Binary className="w-4 h-4 text-zinc-500" />, question: "Explain Kubernetes (GKE) like I'm five." },
+  { icon: <Activity className="w-4 h-4 text-zinc-500" />, question: "What is the benefit of Cloud Run over VMs?" },
+  { icon: <Globe className="w-4 h-4 text-zinc-500" />, question: "How does Artifact Registry help DevOps?" },
+  { icon: <ShieldCheck className="w-4 h-4 text-zinc-500" />, question: "What is Project vs Organization in GCP?" },
+  { icon: <Database className="w-4 h-4 text-zinc-500" />, question: "How does a Load Balancer work in GCP?" },
 ];
 
 export default function DevOpsBotPage() {
@@ -81,7 +49,6 @@ export default function DevOpsBotPage() {
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Load chat history from local storage
   useEffect(() => {
     const saved = localStorage.getItem("devops_bot_chats");
     if (saved) {
@@ -93,14 +60,12 @@ export default function DevOpsBotPage() {
     }
   }, []);
 
-  // Save chat history to local storage
   useEffect(() => {
     if (messages.length > 0) {
       localStorage.setItem("devops_bot_chats", JSON.stringify(messages));
     }
   }, [messages]);
 
-  // Scroll to bottom when messages change
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -135,7 +100,7 @@ export default function DevOpsBotPage() {
       };
       setMessages((prev) => [...prev, botMessage]);
     } catch (error) {
-      toast.error("Failed to get response from ZeroOps Bot");
+      toast.error("Failed to establish connection with AI Kernel");
       console.error(error);
     } finally {
       setIsLoading(false);
@@ -145,48 +110,44 @@ export default function DevOpsBotPage() {
   const clearChat = () => {
     setMessages([]);
     localStorage.removeItem("devops_bot_chats");
-    toast.success("Chat history cleared");
+    toast.success("Terminal history purged");
   };
 
   const exportChatToPDF = async () => {
     if (messages.length === 0) {
-      toast.error("No messages to export");
+      toast.error("No data to export");
       return;
     }
 
     const { jsPDF } = await import("jspdf");
     const doc = new jsPDF();
-
-    // Config
     const margin = 20;
     const pageWidth = doc.internal.pageSize.getWidth();
     const contentWidth = pageWidth - margin * 2;
     let y = 35;
 
-    // Background
-    doc.setFillColor(5, 5, 5);
+    doc.setFillColor(9, 9, 11);
     doc.rect(0, 0, 210, 297, "F");
 
-    // Header Branding
-    doc.setFillColor(37, 99, 235); // Blue
+    doc.setFillColor(161, 161, 170); // zinc-400
     doc.rect(margin, 15, 2, 12, "F");
 
     doc.setTextColor(255, 255, 255);
     doc.setFont("helvetica", "bold");
     doc.setFontSize(22);
-    doc.text("ZeroOps", margin + 5, 23);
+    doc.text("ZEROOPS CORE", margin + 5, 23);
 
     doc.setFontSize(9);
-    doc.setTextColor(37, 99, 235);
-    doc.text("DEVOPS MENTOR CHAT TRANSCRIPT", margin + 5, 28);
+    doc.setTextColor(161, 161, 170);
+    doc.text("SYSTEM INTELLIGENCE TRANSCRIPT", margin + 5, 28);
 
-    doc.setDrawColor(30, 30, 30);
+    doc.setDrawColor(39, 39, 42); // zinc-800
     doc.line(margin, 35, pageWidth - margin, 35);
 
     const checkPage = (height: number) => {
       if (y + height > 275) {
         doc.addPage();
-        doc.setFillColor(5, 5, 5);
+        doc.setFillColor(9, 9, 11);
         doc.rect(0, 0, 210, 297, "F");
         y = 25;
         return true;
@@ -194,20 +155,18 @@ export default function DevOpsBotPage() {
       return false;
     };
 
-    messages.forEach((msg, idx) => {
+    messages.forEach((msg) => {
       const isUser = msg.role === "user";
-
-      // Message Header
       checkPage(15);
       y += 5;
       doc.setFontSize(9);
       doc.setFont("helvetica", "bold");
-      if (isUser) doc.setTextColor(147, 51, 234);
-      else doc.setTextColor(37, 99, 235);
-      doc.text(isUser ? "USER" : "ZEROOPS BOT", margin, y);
+      if (isUser) doc.setTextColor(255, 255, 255);
+      else doc.setTextColor(52, 211, 153); // emerald-400
+      doc.text(isUser ? "ADMIN" : "SYSTEM", margin, y);
 
       doc.setFont("helvetica", "normal");
-      doc.setTextColor(100, 100, 100);
+      doc.setTextColor(113, 113, 122); // zinc-500
       doc.text(
         new Date(msg.timestamp).toLocaleString(),
         pageWidth - margin - 40,
@@ -215,15 +174,10 @@ export default function DevOpsBotPage() {
       );
       y += 6;
 
-      // Content
       doc.setFontSize(10);
-      doc.setTextColor(200, 200, 200);
+      doc.setTextColor(212, 212, 216);
 
-      // Simple MD stripper/parser for PDF
-      const cleanContent = msg.content.replace(
-        /```[\s\S]*?```/g,
-        "\n[CODE BLOCK]\n",
-      );
+      const cleanContent = msg.content.replace(/```[\s\S]*?```/g, "\n[CODE BLOCK]\n");
       const lines = cleanContent.split("\n");
 
       lines.forEach((line) => {
@@ -231,7 +185,6 @@ export default function DevOpsBotPage() {
           y += 4;
           return;
         }
-
         let text = line.replace(/\*\*(.*?)\*\*/g, "$1");
         const splitText = doc.splitTextToSize(text, contentWidth);
         checkPage(splitText.length * 5.5);
@@ -240,51 +193,32 @@ export default function DevOpsBotPage() {
       });
 
       y += 5;
-      doc.setDrawColor(20, 20, 20);
+      doc.setDrawColor(24, 24, 27); // zinc-900
       doc.line(margin, y, pageWidth - margin, y);
       y += 5;
     });
 
-    const totalPages = (doc as any).internal.getNumberOfPages();
-    for (let i = 1; i <= totalPages; i++) {
-      doc.setPage(i);
-      doc.setFontSize(8);
-      doc.setTextColor(80, 80, 80);
-      doc.text(
-        `ZEROOPS CHAT • PAGE ${i} OF ${totalPages}`,
-        pageWidth / 2,
-        285,
-        { align: "center" },
-      );
-    }
-
-    doc.save(`zeroops-chat-export-${new Date().getTime()}.pdf`);
-    toast.success("Chat exported successfully!");
+    doc.save(`zeroops-system-log-${new Date().getTime()}.pdf`);
+    toast.success("Log exported successfully");
   };
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white selection:bg-blue-500/30 overflow-hidden flex flex-col">
-      {/* Background Effects */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-10%] left-[-10%] h-[500px] w-[500px] rounded-full bg-blue-600/5 blur-[120px]" />
-        <div className="absolute bottom-[-10%] right-[-10%] h-[500px] w-[500px] rounded-full bg-purple-600/5 blur-[120px]" />
-      </div>
-
+    <div className="min-h-screen bg-transparent text-zinc-100 selection:bg-zinc-500/30 overflow-hidden flex flex-col font-sans">
       <SiteHeader />
 
       <main className="relative z-10 pt-24 pb-8 flex-1 flex flex-col w-[80vw] mx-auto overflow-hidden">
         {/* Header Section */}
-        <div className="flex items-center justify-between mb-6 shrink-0">
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-2xl bg-linear-to-br from-blue-600/30 to-purple-600/30 border border-white/10 shadow-[0_0_20px_rgba(37,99,235,0.15)] glow-pulse">
-              <BrainCircuit className="w-6 h-6 text-blue-400" />
+        <div className="flex items-center justify-between mb-6 shrink-0 mt-6">
+          <div className="flex items-center gap-4">
+            <div className="p-3 rounded bg-zinc-900/50 border border-zinc-800">
+              <TerminalSquare className="w-5 h-5 text-zinc-300" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold tracking-tight">ZeroOps Bot</h1>
-              <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-                <span className="text-xs text-gray-400 font-medium">
-                  Expert GCP DevOps Mentor
+              <h1 className="text-xl font-semibold tracking-tight text-zinc-100">System Intelligence Core</h1>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="text-[10px] text-zinc-500 font-mono uppercase tracking-widest">
+                  Active connection to AI Kernel
                 </span>
               </div>
             </div>
@@ -295,68 +229,60 @@ export default function DevOpsBotPage() {
               size="sm"
               onClick={exportChatToPDF}
               disabled={messages.length === 0}
-              className="text-gray-400 hover:text-blue-400 hover:bg-blue-500/10 rounded-xl"
+              className="text-zinc-400 hover:text-zinc-100 hover:bg-zinc-800/50 rounded h-8 text-xs font-mono"
             >
-              <FileDown className="w-4 h-4 mr-2" /> Export PDF
+              <FileDown className="w-3 h-3 mr-2" /> Export Log
             </Button>
             <Button
               variant="ghost"
               size="sm"
               onClick={clearChat}
               disabled={messages.length === 0}
-              className="text-gray-400 hover:text-red-400 hover:bg-red-500/10 rounded-xl"
+              className="text-zinc-400 hover:text-red-400 hover:bg-red-500/10 rounded h-8 text-xs font-mono"
             >
-              <Trash2 className="w-4 h-4 mr-2" /> Clear
+              <Trash2 className="w-3 h-3 mr-2" /> Purge
             </Button>
           </div>
         </div>
 
         {/* Chat Area */}
-        <div className="flex-1 min-h-0 bg-[#0A0A0A]/40 backdrop-blur-2xl border border-white/5 rounded-[2.5rem] flex flex-col shadow-2xl overflow-hidden mb-6 relative">
-          <div className="absolute top-0 left-0 right-0 h-20 bg-linear-to-b from-[#0A0A0A] to-transparent z-10 pointer-events-none opacity-50" />
-
+        <div className="flex-1 min-h-0 bg-zinc-950/40 backdrop-blur-3xl border border-zinc-800/80 rounded-xl flex flex-col shadow-2xl overflow-hidden mb-6 relative">
           <div
             ref={scrollRef}
-            className="flex-1 overflow-y-auto p-8 space-y-10 scroll-smooth scrollbar-thin scrollbar-thumb-white/5 hover:scrollbar-thumb-white/10"
+            className="flex-1 overflow-y-auto p-8 space-y-8 scroll-smooth"
           >
             {messages.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-center space-y-10 max-w-4xl mx-auto">
+              <div className="h-full flex flex-col items-center justify-center text-center space-y-10 max-w-3xl mx-auto">
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.9 }}
+                  initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
-                  className="space-y-6"
+                  className="space-y-4"
                 >
-                  <h2 className="text-4xl md:text-5xl font-bold bg-clip-text text-transparent bg-linear-to-r from-blue-400 via-blue-200 to-purple-400 leading-tight">
-                    Master GCP DevOps with Ease
+                  <h2 className="text-2xl font-semibold tracking-tight text-zinc-300">
+                    Awaiting System Input
                   </h2>
-                  <p className="text-gray-400 text-lg max-w-2xl mx-auto leading-relaxed">
-                    I'm your AI-powered companion for navigating the complex
-                    ecosystems of Google Cloud. Ask about architecture,
-                    pipelines, or security in plain English.
+                  <p className="text-zinc-500 text-xs font-mono max-w-xl mx-auto leading-relaxed">
+                    Input query regarding infrastructure topology, CI/CD orchestration, or GCP architecture parameters. 
+                    The system will synthesize an enterprise-grade response.
                   </p>
                 </motion.div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 w-full px-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 w-full">
                   {PRESET_QUESTIONS.map((item, idx) => (
                     <motion.button
                       key={idx}
-                      initial={{ opacity: 0, y: 20 }}
+                      initial={{ opacity: 0, y: 10 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: idx * 0.1 }}
-                      whileHover={{
-                        scale: 1.05,
-                        y: -5,
-                        backgroundColor: "rgba(255,255,255,0.05)",
-                      }}
-                      whileTap={{ scale: 0.95 }}
+                      transition={{ delay: idx * 0.05 }}
+                      whileHover={{ scale: 1.02 }}
+                      whileTap={{ scale: 0.98 }}
                       onClick={() => handleSend(item.question)}
-                      className="flex flex-col items-center justify-center p-8 rounded-4xl bg-white/2 border border-white/5 hover:border-blue-500/30 transition-all text-center group relative overflow-hidden"
+                      className="flex flex-col items-start text-left p-5 rounded border border-zinc-800/50 bg-zinc-900/30 hover:bg-zinc-800 transition-all group relative overflow-hidden"
                     >
-                      <div className="absolute inset-0 bg-linear-to-br from-blue-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-                      <div className="mb-4 p-4 rounded-2xl bg-white/5 group-hover:bg-blue-500/20 transition-all duration-300 group-hover:rotate-6 shadow-inner">
+                      <div className="mb-3 p-2 rounded bg-zinc-950 border border-zinc-800">
                         {item.icon}
                       </div>
-                      <div className="text-xs font-semibold text-gray-300 group-hover:text-white transition-colors line-clamp-3 leading-relaxed">
+                      <div className="text-xs text-zinc-400 group-hover:text-zinc-200 font-mono leading-relaxed">
                         {item.question}
                       </div>
                     </motion.button>
@@ -364,57 +290,44 @@ export default function DevOpsBotPage() {
                 </div>
               </div>
             ) : (
-              <div className="space-y-8 max-w-5xl mx-auto w-full">
+              <div className="space-y-6 max-w-4xl mx-auto w-full">
                 <AnimatePresence initial={false}>
                   {messages.map((message, index) => (
                     <motion.div
                       key={index}
-                      initial={{
-                        opacity: 0,
-                        x: message.role === "user" ? 20 : -20,
-                        y: 10,
-                      }}
-                      animate={{ opacity: 1, x: 0, y: 0 }}
-                      transition={{
-                        type: "spring",
-                        stiffness: 260,
-                        damping: 20,
-                      }}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
                       className={cn(
-                        "flex gap-4 group",
-                        message.role === "user"
-                          ? "justify-end"
-                          : "justify-start",
+                        "flex gap-4",
+                        message.role === "user" ? "justify-end" : "justify-start",
                       )}
                     >
                       {message.role === "model" && (
-                        <div className="w-10 h-10 rounded-2xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center shrink-0 shadow-lg shadow-blue-500/5 self-end">
-                          <Bot className="w-5 h-5 text-blue-400" />
+                        <div className="w-8 h-8 rounded border border-zinc-800 bg-zinc-950 flex items-center justify-center shrink-0 mt-1">
+                          <Terminal className="w-4 h-4 text-emerald-500" />
                         </div>
                       )}
                       <div
                         className={cn(
-                          "max-w-[85%] rounded-[1.75rem] px-5 py-4 shadow-xl relative",
+                          "max-w-[85%] px-5 py-4 relative",
                           message.role === "user"
-                            ? "bg-linear-to-br from-blue-600 to-indigo-700 text-white rounded-tr-none chat-bubble-user-shadow"
-                            : "bg-[#151515] border border-white/5 text-gray-200 rounded-bl-none chat-bubble-bot-shadow",
+                            ? "bg-zinc-100 text-zinc-900 rounded shadow-sm"
+                            : "bg-zinc-900/40 border border-zinc-800/80 text-zinc-300 rounded",
                         )}
                       >
                         {message.role === "model" ? (
-                          <div className="prose prose-invert prose-sm max-w-none">
+                          <div className="prose prose-invert prose-sm max-w-none text-zinc-300 prose-pre:bg-zinc-950 prose-pre:border prose-pre:border-zinc-800 prose-headings:text-zinc-100 font-mono text-xs leading-relaxed">
                             <MarkdownRenderer content={message.content} />
                           </div>
                         ) : (
-                          <p className="text-sm leading-relaxed font-medium">
+                          <p className="text-sm font-medium">
                             {message.content}
                           </p>
                         )}
                         <div
                           className={cn(
-                            "text-[10px] mt-2 opacity-40 font-mono",
-                            message.role === "user"
-                              ? "text-right"
-                              : "text-left",
+                            "text-[9px] mt-3 opacity-40 font-mono uppercase tracking-widest",
+                            message.role === "user" ? "text-right" : "text-left",
                           )}
                         >
                           {new Date(message.timestamp).toLocaleTimeString([], {
@@ -423,61 +336,23 @@ export default function DevOpsBotPage() {
                           })}
                         </div>
                       </div>
-                      {message.role === "user" && (
-                        <div className="w-10 h-10 rounded-2xl bg-purple-600/10 border border-purple-500/20 flex items-center justify-center shrink-0 shadow-lg shadow-purple-500/5 self-end">
-                          <UserIcon className="w-5 h-5 text-purple-400" />
-                        </div>
-                      )}
                     </motion.div>
                   ))}
                 </AnimatePresence>
 
                 {isLoading && (
                   <motion.div
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    animate={{ opacity: 1, scale: 1 }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
                     className="flex gap-4 justify-start"
                   >
-                    <div className="w-10 h-10 rounded-2xl bg-blue-600/10 border border-blue-500/20 flex items-center justify-center shrink-0 self-end">
-                      <Bot className="w-5 h-5 text-blue-400" />
+                    <div className="w-8 h-8 rounded border border-zinc-800 bg-zinc-950 flex items-center justify-center shrink-0 mt-1">
+                      <Terminal className="w-4 h-4 text-emerald-500" />
                     </div>
-                    <div className="bg-[#151515] border border-white/5 rounded-[1.75rem] rounded-bl-none px-6 py-4 flex items-center gap-4 shadow-xl">
-                      <div className="flex gap-1">
-                        <motion.span
-                          animate={{
-                            scale: [1, 1.5, 1],
-                            opacity: [0.3, 1, 0.3],
-                          }}
-                          transition={{ duration: 1, repeat: Infinity }}
-                          className="w-1.5 h-1.5 bg-blue-500 rounded-full"
-                        />
-                        <motion.span
-                          animate={{
-                            scale: [1, 1.5, 1],
-                            opacity: [0.3, 1, 0.3],
-                          }}
-                          transition={{
-                            duration: 1,
-                            repeat: Infinity,
-                            delay: 0.2,
-                          }}
-                          className="w-1.5 h-1.5 bg-blue-500 rounded-full"
-                        />
-                        <motion.span
-                          animate={{
-                            scale: [1, 1.5, 1],
-                            opacity: [0.3, 1, 0.3],
-                          }}
-                          transition={{
-                            duration: 1,
-                            repeat: Infinity,
-                            delay: 0.4,
-                          }}
-                          className="w-1.5 h-1.5 bg-blue-500 rounded-full"
-                        />
-                      </div>
-                      <span className="text-xs font-semibold text-blue-400/80 tracking-wider">
-                        THINKING
+                    <div className="bg-zinc-900/40 border border-zinc-800/80 rounded px-5 py-3 flex items-center gap-3">
+                      <Loader2 className="w-3 h-3 animate-spin text-zinc-500" />
+                      <span className="text-[10px] font-mono text-zinc-400 tracking-widest uppercase">
+                        Synthesizing Response...
                       </span>
                     </div>
                   </motion.div>
@@ -485,86 +360,61 @@ export default function DevOpsBotPage() {
               </div>
             )}
           </div>
-          <div className="absolute bottom-0 left-0 right-0 h-20 bg-linear-to-t from-[#0A0A0A] to-transparent z-10 pointer-events-none opacity-50" />
         </div>
 
         {/* Input Area */}
-        <div className="p-1 border border-white/5 bg-[#0D0D0D]/60 backdrop-blur-3xl rounded-4xl shadow-2xl shrink-0 group focus-within:ring-2 focus-within:ring-blue-500/20 transition-all">
-          <div className="relative flex items-center gap-3 p-2">
-            <div className="flex-1 flex items-center bg-white/3 rounded-2xl border border-white/5 focus-within:border-blue-500/40 transition-all px-4 group/input">
-              <MessageSquare className="w-5 h-5 text-gray-500 group-focus-within/input:text-blue-400 transition-colors shrink-0" />
-              <Textarea
-                placeholder="Ask ZeroOps Bot about GCP DevOps..."
-                className="flex-1 min-h-[50px] max-h-[150px] border-none bg-transparent focus-visible:ring-0 resize-none py-4 px-3 text-sm scrollbar-none placeholder:text-gray-600"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" && !e.shiftKey) {
-                    e.preventDefault();
-                    handleSend();
-                  }
-                }}
-              />
+        <div className="border border-zinc-800 bg-zinc-950/80 backdrop-blur-3xl rounded-lg shadow-xl shrink-0 focus-within:border-zinc-500 transition-colors">
+          <div className="flex items-center p-2 gap-2">
+            <div className="p-2 shrink-0">
+              <TerminalSquare className="w-4 h-4 text-zinc-500" />
             </div>
+            <Textarea
+              placeholder="admin@zeroops:~# enter query..."
+              className="flex-1 min-h-[44px] max-h-[150px] border-none bg-transparent focus-visible:ring-0 resize-none py-3 px-2 text-sm font-mono text-zinc-300 placeholder:text-zinc-700"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" && !e.shiftKey) {
+                  e.preventDefault();
+                  handleSend();
+                }
+              }}
+            />
             <Button
               size="icon"
               onClick={() => handleSend()}
               disabled={!input.trim() || isLoading}
               className={cn(
-                "h-12 w-12 shrink-0 rounded-2xl transition-all duration-300",
+                "h-10 w-10 shrink-0 rounded transition-all",
                 input.trim()
-                  ? "bg-blue-600 hover:bg-blue-500 hover:scale-105 shadow-lg shadow-blue-500/30"
-                  : "bg-white/5 text-gray-600",
+                  ? "bg-zinc-100 hover:bg-white text-zinc-900"
+                  : "bg-zinc-900 text-zinc-600",
               )}
             >
               {isLoading ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
+                <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
-                <Send className="w-5 h-5" />
+                <Send className="w-4 h-4" />
               )}
             </Button>
-          </div>
-          <div className="px-6 py-2 flex items-center justify-between">
-            <span className="text-[10px] text-gray-500 font-medium">
-              Shift + Enter for multi-line
-            </span>
-            <div className="flex items-center gap-3 opacity-50">
-              <div className="flex items-center gap-1">
-                <div className="w-1 h-1 rounded-full bg-blue-400" />
-                <span className="text-[9px] text-gray-400 uppercase tracking-tighter">
-                  Gemini 2.5 Flash
-                </span>
-              </div>
-            </div>
           </div>
         </div>
       </main>
 
       <style jsx global>{`
-        .chat-bubble-user-shadow {
-          box-shadow: 0 10px 25px -10px rgba(37, 99, 235, 0.5);
+        ::-webkit-scrollbar {
+          width: 8px;
+          height: 8px;
         }
-        .chat-bubble-bot-shadow {
-          box-shadow: 0 10px 25px -10px rgba(0, 0, 0, 0.5);
+        ::-webkit-scrollbar-track {
+          background: transparent;
         }
-        .glow-pulse {
-          animation: glow 3s ease-in-out infinite;
+        ::-webkit-scrollbar-thumb {
+          background: rgba(63, 63, 70, 0.5); /* zinc-700 */
+          border-radius: 4px;
         }
-        @keyframes glow {
-          0%,
-          100% {
-            box-shadow: 0 0 20px rgba(37, 99, 235, 0.1);
-          }
-          50% {
-            box-shadow: 0 0 40px rgba(37, 99, 235, 0.3);
-          }
-        }
-        .scrollbar-none::-webkit-scrollbar {
-          display: none;
-        }
-        .scrollbar-none {
-          -ms-overflow-style: none;
-          scrollbar-width: none;
+        ::-webkit-scrollbar-thumb:hover {
+          background: rgba(82, 82, 91, 0.8); /* zinc-600 */
         }
       `}</style>
     </div>

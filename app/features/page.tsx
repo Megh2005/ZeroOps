@@ -65,7 +65,7 @@ const BentoCard = ({
 
 export default function FeaturesPage() {
   return (
-    <div className="min-h-screen bg-[#09090b] text-zinc-100 selection:bg-blue-500/30 ">
+    <div className="min-h-screen bg-transparent text-zinc-100 selection:bg-blue-500/30 ">
       <SiteHeader />
 
       <main className="relative z-10 pt-32 pb-20">
