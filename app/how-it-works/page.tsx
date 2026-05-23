@@ -22,8 +22,8 @@ import {
 import { SiteHeader } from "@/components/site-header";
 
 const fadeInUp = {
-  hidden: { opacity: 0, y: 30 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+  hidden: { opacity: 0, y: 15 },
+  visible: { opacity: 1, y: 0, transition: { duration: 0.4 } },
 };
 
 const staggerContainer = {
@@ -53,19 +53,19 @@ const TimelineItem = ({
     variants={fadeInUp}
     className={`relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group`}
   >
-    <div className="flex items-center justify-center w-10 h-10 rounded-full border border-white/20 bg-[#111] shadow shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10">
+    <div className="flex items-center justify-center w-10 h-10 rounded-lg border border-zinc-800 bg-zinc-950 text-zinc-300 shadow-sm shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 z-10 transition-colors group-hover:border-blue-500/30 group-hover:text-blue-400">
       {icon}
     </div>
-    <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-[#111] p-6 rounded-3xl border border-white/10 shadow-lg hover:border-blue-500/30 transition-colors">
-      <div className="flex items-center justify-between mb-2">
-        <h3 className="font-bold text-white text-lg">{title}</h3>
-        <span className="text-xs text-blue-400 bg-blue-500/10 px-2 py-1 rounded-full">
+    <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-zinc-900/10 p-6 rounded-2xl border border-zinc-800/80 shadow-sm hover:bg-zinc-900/20 hover:border-zinc-700/80 transition-all backdrop-blur-2xl">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="font-semibold text-zinc-100 text-base tracking-tight">{title}</h3>
+        <span className="text-[10px] font-mono text-zinc-400 bg-zinc-950 border border-zinc-800 px-2 py-0.5 rounded shadow-sm">
           {year}
         </span>
       </div>
-      <p className="text-gray-400 text-sm leading-relaxed">{description}</p>
+      <p className="text-zinc-500 text-xs leading-relaxed">{description}</p>
     </div>
-    <div className="absolute top-1/2 left-5 md:left-1/2 w-0.5 h-full bg-white/10 -translate-y-1/2 z-0 md:-translate-x-1/2 hidden md:block" />
+    <div className="absolute top-1/2 left-5 md:left-1/2 w-px h-full bg-zinc-800/80 -translate-y-1/2 z-0 md:-translate-x-1/2 hidden md:block" />
   </motion.div>
 );
 
@@ -82,12 +82,12 @@ const FeatureSection = ({
 }) => (
   <motion.div variants={fadeInUp} className="mb-24 last:mb-0">
     <div className="flex items-center gap-4 mb-8">
-      <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-600/10 text-blue-400">
+      <div className="flex h-10 w-10 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-950 text-zinc-300 shadow-sm">
         {icon}
       </div>
       <div>
-        <h2 className="text-3xl font-bold text-white">{title}</h2>
-        <p className="text-gray-400 mt-1">{description}</p>
+        <h2 className="text-2xl font-semibold text-zinc-100 tracking-tight">{title}</h2>
+        <p className="text-zinc-400 text-xs font-mono mt-1">{description}</p>
       </div>
     </div>
     {children}
@@ -96,14 +96,7 @@ const FeatureSection = ({
 
 export default function HowItWorksPage() {
   return (
-    <div className="min-h-screen bg-[#050505] text-white selection:bg-blue-500/30 ">
-      {/* Background Effects */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute top-[-20%] left-[-10%] h-[800px] w-[800px] rounded-full bg-purple-900/10 blur-[120px]" />
-        <div className="absolute bottom-[-20%] right-[-10%] h-[800px] w-[800px] rounded-full bg-blue-900/10 blur-[120px]" />
-        <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:linear-gradient(180deg,white,rgba(255,255,255,0))]" />
-      </div>
-
+    <div className="min-h-screen bg-[#09090b] text-zinc-100 selection:bg-blue-500/30">
       <SiteHeader />
 
       <main className="relative z-10 pt-32 pb-20">
@@ -115,20 +108,17 @@ export default function HowItWorksPage() {
             variants={fadeInUp}
             className="mx-auto max-w-4xl"
           >
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-1.5 text-sm font-medium text-blue-400">
-              <Sparkles className="h-4 w-4" />
+            <div className="mb-6 inline-flex items-center gap-2 rounded border border-zinc-800 bg-zinc-900/30 px-3 py-1 text-[10px] font-mono tracking-widest uppercase text-zinc-400 shadow-sm">
+              <Sparkles className="h-3 w-3 text-blue-500" />
               Powered by Advanced AI
             </div>
-            <h1 className="mb-8 text-5xl font-bold  md:text-7xl">
+            <h1 className="mb-8 text-4xl font-semibold tracking-tight md:text-6xl text-zinc-100">
               The Engine Behind <br />
-              <span className="text-transparent bg-clip-text bg-linear-to-r from-blue-400 to-purple-500">
-                Zero Ops
-              </span>
+              <span className="text-blue-500">Zero Ops</span>
             </h1>
-            <p className="mx-auto max-w-2xl text-xl text-gray-400 leading-relaxed">
+            <p className="mx-auto max-w-2xl text-sm text-zinc-400 leading-relaxed font-mono">
               We combine visual drag-and-drop simplicity with the raw power of
-              Google's Gemini AI to generate production-grade infrastructure
-              code.
+              agentic intelligence to generate production-grade infrastructure code.
             </p>
           </motion.div>
         </section>
@@ -144,41 +134,41 @@ export default function HowItWorksPage() {
             <FeatureSection
               title="Technical Architecture"
               description="From canvas to cloud in milliseconds."
-              icon={<Cpu className="h-6 w-6" />}
+              icon={<Cpu className="h-5 w-5" />}
             >
               <div className="grid gap-6 md:grid-cols-3">
-                <div className="bg-[#111] p-8 rounded-3xl border border-white/10">
-                  <div className="mb-4 text-blue-400">
-                    <Layers className="h-8 w-8" />
+                <div className="bg-zinc-900/10 p-8 rounded-2xl border border-zinc-800/80 backdrop-blur-2xl hover:bg-zinc-900/20 transition-all">
+                  <div className="mb-5 inline-flex items-center justify-center rounded-lg border border-zinc-800 bg-zinc-950 p-2 text-zinc-300">
+                    <Layers className="h-4 w-4" />
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-2">
+                  <h3 className="text-base font-semibold text-zinc-100 mb-2 tracking-tight">
                     Visual State
                   </h3>
-                  <p className="text-gray-400 text-sm">
+                  <p className="text-zinc-500 text-xs leading-relaxed">
                     Your canvas design is captured as a JSON state graph,
                     representing nodes (resources) and edges (connections).
                   </p>
                 </div>
-                <div className="bg-[#111] p-8 rounded-3xl border border-white/10">
-                  <div className="mb-4 text-purple-400">
-                    <Code className="h-8 w-8" />
+                <div className="bg-zinc-900/10 p-8 rounded-2xl border border-zinc-800/80 backdrop-blur-2xl hover:bg-zinc-900/20 transition-all">
+                  <div className="mb-5 inline-flex items-center justify-center rounded-lg border border-zinc-800 bg-zinc-950 p-2 text-zinc-300">
+                    <Code className="h-4 w-4" />
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-2">
+                  <h3 className="text-base font-semibold text-zinc-100 mb-2 tracking-tight">
                     Transpilation
                   </h3>
-                  <p className="text-gray-400 text-sm">
+                  <p className="text-zinc-500 text-xs leading-relaxed">
                     Our engine traverses the graph, resolving dependencies and
                     mapping each node to its corresponding Terraform HCL block.
                   </p>
                 </div>
-                <div className="bg-[#111] p-8 rounded-3xl border border-white/10">
-                  <div className="mb-4 text-green-400">
-                    <Cloud className="h-8 w-8" />
+                <div className="bg-zinc-900/10 p-8 rounded-2xl border border-zinc-800/80 backdrop-blur-2xl hover:bg-zinc-900/20 transition-all">
+                  <div className="mb-5 inline-flex items-center justify-center rounded-lg border border-zinc-800 bg-zinc-950 p-2 text-zinc-300">
+                    <Cloud className="h-4 w-4" />
                   </div>
-                  <h3 className="text-xl font-bold text-white mb-2">
+                  <h3 className="text-base font-semibold text-zinc-100 mb-2 tracking-tight">
                     Deployment
                   </h3>
-                  <p className="text-gray-400 text-sm">
+                  <p className="text-zinc-500 text-xs leading-relaxed">
                     The generated Terraform is validated against cloud policies
                     and can be deployed directly via CLI or CI/CD pipelines.
                   </p>
@@ -186,67 +176,64 @@ export default function HowItWorksPage() {
               </div>
             </FeatureSection>
 
-            {/* Gemini AI Integration */}
+            {/* AI Integration */}
             <FeatureSection
-              title="Gemini AI Integration"
+              title="Agentic AI Integration"
               description="Your intelligent infrastructure co-pilot."
-              icon={<Brain className="h-6 w-6" />}
+              icon={<Brain className="h-5 w-5" />}
             >
-              <div className="relative overflow-hidden rounded-3xl bg-linear-to-br from-[#1a1a2e] to-[#111] border border-white/10 p-8 md:p-12">
-                <div className="absolute top-0 right-0 p-12 opacity-10">
-                  <Bot className="w-64 h-64 text-blue-500" />
+              <div className="relative overflow-hidden rounded-2xl bg-zinc-900/10 border border-zinc-800/80 backdrop-blur-2xl p-8 md:p-12">
+                <div className="absolute top-0 right-0 p-12 opacity-5">
+                  <Bot className="w-64 h-64 text-zinc-400" />
                 </div>
                 <div className="relative z-10 grid gap-12 md:grid-cols-2">
                   <div>
-                    <h3 className="text-2xl font-bold text-white mb-6">
+                    <h3 className="text-xl font-semibold text-zinc-100 mb-6 tracking-tight">
                       Context-Aware Suggestions
                     </h3>
-                    <p className="text-gray-400 mb-6 leading-relaxed">
+                    <p className="text-zinc-500 text-xs mb-6 leading-relaxed">
                       Zero Ops doesn't just place boxes. It understands what
-                      you're building. If you drop a database, Gemini suggests
+                      you're building. If you drop a database, the engine suggests
                       the optimal connection pooling settings. If you add a load
                       balancer, it recommends the right health checks.
                     </p>
-                    <ul className="space-y-3">
-                      <li className="flex items-center gap-3 text-sm text-gray-300">
-                        <div className="h-1.5 w-1.5 rounded-full bg-blue-500" />
+                    <ul className="space-y-3 font-mono text-[10px] text-zinc-400">
+                      <li className="flex items-center gap-3">
+                        <span className="text-blue-500">✓</span>
                         Real-time security auditing
                       </li>
-                      <li className="flex items-center gap-3 text-sm text-gray-300">
-                        <div className="h-1.5 w-1.5 rounded-full bg-blue-500" />
-                        Cost optimization tips
+                      <li className="flex items-center gap-3">
+                        <span className="text-blue-500">✓</span>
+                        Cost optimization profiling
                       </li>
-                      <li className="flex items-center gap-3 text-sm text-gray-300">
-                        <div className="h-1.5 w-1.5 rounded-full bg-blue-500" />
-                        Compliance checks (HIPAA, GDPR)
+                      <li className="flex items-center gap-3">
+                        <span className="text-blue-500">✓</span>
+                        Compliance constraint mapping
                       </li>
                     </ul>
                   </div>
-                  <div className="bg-black/50 rounded-2xl p-6 border border-white/5 text-sm">
-                    <div className="flex items-center gap-2 mb-4 border-b border-white/10 pb-2">
-                      <Sparkles className="w-4 h-4 text-yellow-500" />
-                      <span className="text-gray-400">Gemini Analysis</span>
+                  <div className="bg-[#09090b] rounded-xl p-6 border border-zinc-800/80 text-xs shadow-inner">
+                    <div className="flex items-center gap-2 mb-4 border-b border-zinc-800 pb-3 font-mono text-[10px]">
+                      <Sparkles className="w-3 h-3 text-blue-500" />
+                      <span className="text-zinc-400 uppercase tracking-widest">Diagnostic Output</span>
                     </div>
-                    <div className="space-y-4">
-                      <p className="text-gray-300">
-                        <span className="text-blue-400">User:</span> Connect App
+                    <div className="space-y-4 font-mono">
+                      <p className="text-zinc-300">
+                        <span className="text-zinc-500">user@admin:~$</span> Connect App
                         Engine to Cloud SQL.
                       </p>
-                      <p className="text-gray-300">
-                        <span className="text-purple-400">Gemini:</span> I've
-                        detected a public IP on your Cloud SQL instance. For
-                        better security, I recommend using the{" "}
-                        <span className="text-green-400">
-                          Cloud SQL Auth Proxy
-                        </span>{" "}
-                        or{" "}
-                        <span className="text-green-400">
-                          Private Service Connect
-                        </span>
-                        .
-                      </p>
-                      <div className="bg-green-500/10 text-green-400 p-3 rounded-lg border border-green-500/20">
-                        ✓ Automatically applied Private IP configuration.
+                      <div className="text-zinc-400 border-l-2 border-zinc-800 pl-3 py-1 space-y-2">
+                        <p>
+                          <span className="text-blue-400">agent-node:</span> Detected public IP exposure on Cloud SQL segment. 
+                        </p>
+                        <p>
+                          Mitigation required: Switching to 
+                          <span className="text-zinc-200 font-semibold"> Cloud SQL Auth Proxy </span> 
+                          or <span className="text-zinc-200 font-semibold"> Private Service Connect</span>.
+                        </p>
+                      </div>
+                      <div className="bg-emerald-500/10 text-emerald-400 p-2.5 rounded border border-emerald-500/20 text-[10px]">
+                        ✓ Action taken: Implicit Private IP configuration established.
                       </div>
                     </div>
                   </div>
@@ -258,25 +245,25 @@ export default function HowItWorksPage() {
             <FeatureSection
               title="Business Scope"
               description="Our vision for the future of cloud engineering."
-              icon={<Target className="h-6 w-6" />}
+              icon={<Target className="h-5 w-5" />}
             >
               <div className="grid gap-6 md:grid-cols-2">
-                <div className="bg-[#111] p-8 rounded-3xl border border-white/10">
-                  <h3 className="text-xl font-bold text-white mb-4">
+                <div className="bg-zinc-900/10 p-8 rounded-2xl border border-zinc-800/80 backdrop-blur-2xl hover:bg-zinc-900/20 transition-all">
+                  <h3 className="text-base font-semibold text-zinc-100 mb-3 tracking-tight">
                     Democratizing DevOps
                   </h3>
-                  <p className="text-gray-400 leading-relaxed">
+                  <p className="text-zinc-500 text-xs leading-relaxed">
                     We aim to lower the barrier to entry for cloud
                     infrastructure. By 2026, we envision a world where a
                     frontend developer can architect a global-scale backend as
                     easily as they build a UI component.
                   </p>
                 </div>
-                <div className="bg-[#111] p-8 rounded-3xl border border-white/10">
-                  <h3 className="text-xl font-bold text-white mb-4">
+                <div className="bg-zinc-900/10 p-8 rounded-2xl border border-zinc-800/80 backdrop-blur-2xl hover:bg-zinc-900/20 transition-all">
+                  <h3 className="text-base font-semibold text-zinc-100 mb-3 tracking-tight">
                     Enterprise Governance
                   </h3>
-                  <p className="text-gray-400 leading-relaxed">
+                  <p className="text-zinc-500 text-xs leading-relaxed">
                     For large organizations, Zero Ops will become the central
                     source of truth. We plan to integrate deep policy-as-code
                     enforcement, ensuring that every resource deployed meets
@@ -290,32 +277,32 @@ export default function HowItWorksPage() {
             <FeatureSection
               title="Future Roadmap"
               description="Where we are going next."
-              icon={<Clock className="h-6 w-6" />}
+              icon={<Clock className="h-5 w-5" />}
             >
-              <div className="relative space-y-8 before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-linear-to-b before:from-transparent before:via-white/10 before:to-transparent">
+              <div className="relative space-y-8 before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-px before:bg-zinc-800">
                 <TimelineItem
                   year="Q1 2026"
                   title="Multi-Cloud Expansion"
                   description="Full support for AWS and Azure resources, allowing seamless cross-cloud architectures."
-                  icon={<Globe className="w-5 h-5 text-white" />}
+                  icon={<Globe className="w-4 h-4" />}
                 />
                 <TimelineItem
                   year="Q2 2026"
                   title="AI Auto-Healing"
-                  description="Gemini agents that not only deploy but actively monitor and fix production incidents in real-time."
-                  icon={<Bot className="w-5 h-5 text-white" />}
+                  description="Agents that not only deploy but actively monitor and fix production incidents in real-time."
+                  icon={<Bot className="w-4 h-4" />}
                 />
                 <TimelineItem
                   year="Q3 2026"
                   title="Marketplace Launch"
                   description="A community-driven marketplace for verified architecture templates and custom components."
-                  icon={<Rocket className="w-5 h-5 text-white" />}
+                  icon={<Rocket className="w-4 h-4" />}
                 />
                 <TimelineItem
                   year="Q4 2026"
                   title="Zero Ops Enterprise"
                   description="On-premise deployment options, SSO enforcement, and dedicated support for Fortune 500 companies."
-                  icon={<Target className="w-5 h-5 text-white" />}
+                  icon={<Target className="w-4 h-4" />}
                 />
               </div>
             </FeatureSection>
@@ -323,9 +310,9 @@ export default function HowItWorksPage() {
         </section>
       </main>
 
-      <footer className="mt-20 border-t border-white/10 bg-[#020202] py-12 text-center text-sm text-gray-600">
+      <footer className="border-t border-zinc-800/80 bg-[#09090b] py-8 text-center text-xs font-mono text-zinc-600">
         <div className="max-w-[80vw] mx-auto px-6">
-          <p>© 2024 Zero Ops. Built for builders.</p>
+          <p>@zeroops-core // Enterprise Orchestration</p>
         </div>
       </footer>
     </div>
